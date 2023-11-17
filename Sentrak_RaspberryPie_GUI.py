@@ -30,7 +30,6 @@ class PlotCanvas(FigureCanvas):
         self.ax.set_title('Plot', fontdict={'fontsize': 32, 'fontweight': 'bold'})
         self.ax.set_xlabel('t', fontdict={'fontsize': 24, 'fontweight': 'bold'})
         self.ax.set_ylabel('ppb', fontdict={'fontsize': 24, 'fontweight': 'bold'}, rotation=0) 
-
         # 在這裡更新畫布
         self.draw()
 
@@ -45,14 +44,14 @@ class RepeatClickButton(QPushButton):
         print("repeated_click emitted")
         self.repeated_click.emit()
     
-    def update(self):
-        # 實現子畫面的更新邏輯
-        print('SubFrame updated!')
-        super.update()
-        pass
+    # def update(self):
+    #     # 實現子畫面的更新邏輯
+    #     print('SubFrame updated!')
+    #     super.update()
+    #     pass
 
 class testSubFrame(QWidget):
-    def __init__(self, title):
+    def __init__(self, title, _style):
         super().__init__()
         print(title)
 
@@ -62,6 +61,7 @@ class testSubFrame(QWidget):
         test_label.setAlignment(Qt.AlignCenter)  
         font.setPointSize(72)
         test_label.setFont(font)
+        test_label.setStyleSheet(_style)
 
         test_sub_frame_layout = QVBoxLayout(self)
         test_sub_frame_layout.setContentsMargins(0, 0, 0, 0)
@@ -106,7 +106,8 @@ class MyWindow(QMainWindow):
         # 創建主畫面
         main_frame = QFrame(self)
         main_frame.setGeometry(0, 100, 960, 780)
-        main_frame.setStyleSheet("background-color: white;")  # 主畫面背景顏色
+        main_frame.setStyleSheet("background-color: lightblue;")
+        # main_frame.setStyleSheet("background-color: white;")  # 主畫面背景顏色
         main_label = QLabel("O<sub>2</sub>： 12.56 ppb<br>T： 16.8 °C") # ° 為Alt 0176
         main_label.setAlignment(Qt.AlignCenter)  # 文字置中
         self.font.setPointSize(72)
@@ -119,7 +120,7 @@ class MyWindow(QMainWindow):
         # 創建子畫面
         self.sub_frame = QFrame(self)
         self.sub_frame.setGeometry(960, 100, 960, 780)
-        self.sub_frame.setStyleSheet("background-color: lightblue;")  # 子畫面背景顏色
+        # self.sub_frame.setStyleSheet("background-color: lightblue;")  # 子畫面背景顏色
         # sub_label = QLabel('子畫面')
         # sub_label.setAlignment(Qt.AlignCenter)  # 文字置中
         # self.font.setPointSize(72)
@@ -312,10 +313,10 @@ class MyWindow(QMainWindow):
         # identify_button.clicked.connect(lambda: self.show_sub_page('識別'))
 
         # 連接新的信號
-        set_button.repeated_click.connect(lambda: self.show_sub_page('設定'))
-        calibrate_button.repeated_click.connect(lambda: self.show_sub_page('校正'))
-        record_button.repeated_click.connect(lambda: self.show_sub_page('紀錄'))
-        identify_button.repeated_click.connect(lambda: self.show_sub_page('識別'))
+        set_button.repeated_click.connect(lambda: self.show_sub_page('設定',set_button.styleSheet()))
+        calibrate_button.repeated_click.connect(lambda: self.show_sub_page('校正',calibrate_button.styleSheet()))
+        record_button.repeated_click.connect(lambda: self.show_sub_page('紀錄',record_button.styleSheet()))
+        identify_button.repeated_click.connect(lambda: self.show_sub_page('識別',identify_button.styleSheet()))
 
         # 將按鈕添加到GridLayout中
         menu_page_layout.addWidget(set_button, 0, 0, 1, 1)
@@ -327,14 +328,16 @@ class MyWindow(QMainWindow):
     
      # 在 MyWindow 中新增一個方法用於返回上一個畫面
 
-    def show_sub_page(self, page_name):
+    def show_sub_page(self, page_name, _style):
         # 隱藏選單按鈕
         self.menu_button.setVisible(False)
+
+        print(_style)
 
         # 判斷是否已經創建了該子畫面
         if page_name not in self.sub_pages:
             # 如果還沒有，則創建一個新的子畫面
-            sub_page = testSubFrame(page_name)
+            sub_page = testSubFrame(page_name, _style)
 
             # 添加到堆疊中
             sub_page_index = self.stacked_widget.addWidget(sub_page)
@@ -361,7 +364,7 @@ class MyWindow(QMainWindow):
 
     def switch_to_previous_page(self):
         if self.stacked_widget is not None:
-            # current_widget = self.stacked_widget.currentWidget()
+        
             # 如果當前是選單畫面，直接返回主畫面
             if self.current_page_index == self.menu_page_index:
                 self.stacked_widget.setCurrentIndex(self.plot_page_index)
@@ -370,7 +373,6 @@ class MyWindow(QMainWindow):
                 # 清除之前的子畫面
                 previous_sub_frame = self.stacked_widget.currentWidget()
                 self.stacked_widget.removeWidget(previous_sub_frame)
-                # self.stacked_widget.removeWidget(self.stacked_widget.currentWidget())
 
                 # 更新當前的畫面索引
                 self.current_page_index = self.stacked_widget.currentIndex()
@@ -386,6 +388,10 @@ class MyWindow(QMainWindow):
 
                 # 切換到更新後的畫面索引
                 self.stacked_widget.setCurrentIndex(self.current_page_index)
+                # if return_to_page is not None and return_to_page in self.sub_pages:
+                #     self.stacked_widget.setCurrentIndex(self.sub_pages[return_to_page])
+                # else:
+                #     self.stacked_widget.setCurrentIndex(self.current_page_index)
 
             # 根據當前的畫面索引顯示或隱藏按鈕
             self.menu_button.setVisible(self.current_page_index == self.plot_page_index)

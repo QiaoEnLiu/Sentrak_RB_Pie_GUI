@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['Sentrak_RaspberryPie_GUI'],
+    ['Sentrak_RaspberryPie_GUI.py'],
     pathex=[],
     binaries=[],
     datas=[],
