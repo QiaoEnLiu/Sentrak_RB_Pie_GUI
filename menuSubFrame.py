@@ -2,9 +2,11 @@
 # menuSubFrame.py
 # 當Snetrak_Raspberry_GUI.py的功能選單的四個按鈕（設定、校正、記錄、識別）偵測到點擊事件時，所執行的程式碼並將子畫面刷新為清單畫面
 
+import os, sys, base64
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtCore import Qt, pyqtSignal, QByteArray
+from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from testEndFrame import testEndFrame
 
@@ -74,9 +76,14 @@ class menuSubFrame(QWidget):
         item = QListWidgetItem()
 
         # 設置圖示
-        icon_label = QLabel()
-        pixmap = QPixmap('picture/test_icon.png')  # 請替換為您的實際圖示路徑 
-        icon_label.setPixmap(pixmap.scaled(72, 72))  # 調整大小以符合您的需求
+        list_icon = QLabel()
+        # pixmap = QPixmap('picture/test_icon.png')  # 請替換為您的實際圖示路徑
+        list_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "test_icon.png")
+        icon_base64 = self.image_to_base64(list_icon_path)
+        icon_bytes = QByteArray.fromBase64(icon_base64.encode())
+        list_icon.setPixmap(QPixmap.fromImage(QImage.fromData(icon_bytes)).scaled(72, 72))
+         
+        # list_icon.setPixmap(pixmap.scaled(72, 72))  # 調整大小以符合您的需求
         item_label = QLabel(option )# 設置文字
          
         # 將圖示和文字排列在一行
@@ -84,7 +91,7 @@ class menuSubFrame(QWidget):
 
         # 將圖示和文字排列在一行，並確保沒有額外空間
         layout.setSpacing(0)
-        layout.addWidget(icon_label)
+        layout.addWidget(list_icon)
         layout.addWidget(item_label)
         layout.addStretch(1)  # 添加伸縮因子
                 
@@ -127,3 +134,8 @@ class menuSubFrame(QWidget):
         self.current_page_index = test_end_frame_index
 
         print('Current Page Index:', self.current_page_index)
+
+    def image_to_base64(self, image_path):
+        with open(image_path, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read())
+            return encoded_image.decode("utf-8")

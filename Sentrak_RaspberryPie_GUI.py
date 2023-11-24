@@ -1,12 +1,12 @@
 #zh-tw
 
-import sys
+import os, sys, base64
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
       QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
       QPushButton, QStackedWidget
-from PyQt5.QtCore import Qt, QTimer, QDateTime
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
+from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from PlotCanvas import PlotCanvas
 from menuSubFrame import menuSubFrame
@@ -132,9 +132,19 @@ class MyWindow(QMainWindow):
         self.return_button.setFont(self.font)
 
         # 設定圖片路徑，picture資料夾和程式碼同一個資料夾中
-        lock_icon_path = 'picture/lock_icon.png'
-        lock_pixmap = QPixmap(lock_icon_path)
-        lock_label.setPixmap(lock_pixmap.scaled(button_width, button_height, Qt.KeepAspectRatio))
+
+        # lock_icon_path = os.path.join('picture', 'lock_icon.png')
+        # print("Absolute path of image:", os.path.abspath(lock_icon_path))
+
+        # lock_icon_path = "picture/lock_icon.png"
+        lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
+        lock_icon_base64 = self.image_to_base64(lock_icon_path) # 使用 lock_icon_base64
+        lock_icon_bytes = QByteArray.fromBase64(lock_icon_base64.encode())
+        lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(lock_icon_bytes)))
+        # lock_pixmap = QPixmap(lock_icon_path)
+        # lock_label.setPixmap(lock_pixmap.scaled(button_width, button_height, Qt.KeepAspectRatio))
+
+
 
         # 將 SpacerItem 插入按鈕之間，靠左、置中、靠右
         spacer_left = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -246,7 +256,7 @@ class MyWindow(QMainWindow):
         self.menu_button.setVisible(False)
 
         # 判斷是否已經創建了該子畫面
-        if page_name not in self.sub_pages:
+        if page_name not in self.sub_pages or not self.stacked_widget.widget(self.sub_pages[page_name]):
             # 如果還沒有，則創建一個新的子畫面
             sub_page = menuSubFrame(page_name, _style, self.sub_pages, self.stacked_widget)
 
@@ -258,7 +268,7 @@ class MyWindow(QMainWindow):
             sub_page_index = self.sub_pages[page_name]
 
             # 強制刷新子畫面
-            sub_page = self.stacked_widget.currentWidget()
+            sub_page = self.stacked_widget.widget(sub_page_index)
             # sub_page.update()  # 假設您的子畫面有 update 方法
 
         # # 設定當前顯示的子畫面索引
@@ -304,10 +314,21 @@ class MyWindow(QMainWindow):
             self.menu_button.setVisible(self.current_page_index == self.plot_page_index)
             self.return_button.setVisible(self.current_page_index != self.plot_page_index)
 
-        print('Current Page Index:', self.current_page_index)
+        print('Current Page Index:', self.current_page_index) 
+
+
+    def image_to_base64(self, image_path):
+        with open(image_path, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read())
+            return encoded_image.decode("utf-8")
 
 
 if __name__ == '__main__':
+    print("Current working directory:", os.getcwd())
     app = QApplication(sys.argv)
-    window = MyWindow()
-    sys.exit(app.exec_())
+    try:
+        window = MyWindow()
+        sys.exit(app.exec_())
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        input("Press Enter to exit")  # 等待使用者按 Enter 鍵
