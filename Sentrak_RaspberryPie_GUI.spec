@@ -5,13 +5,13 @@ a = Analysis(
     ['Sentrak_RaspberryPie_GUI.py'],
     pathex=[],
     binaries=[],
-    datas=[('picture', 'picture')],
-    hiddenimports={},
+    datas=[('picture/', 'picture')],
+    hiddenimports=[],
     hookspath=[],
-    hooksconfig=[],
+    hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    noarchive=False
+    noarchive=False,
 )
 pyz = PYZ(a.pure)
 
