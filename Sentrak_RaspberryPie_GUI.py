@@ -1,15 +1,25 @@
 #zh-tw
 
+# Sentrak_RaspberryPie_GUI.py
+# 此程式碼為主畫面，顯示折線圖為主
+
 import os, sys, base64
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
       QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
       QPushButton, QStackedWidget
-from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
+from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray,\
+      QObject, pyqtSignal, QMetaObject
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from PlotCanvas import PlotCanvas
 from menuSubFrame import menuSubFrame
+from id_Frame import id_LogIn_Frame
+from img_to_base64 import image_to_base64
+
+
+import functools
 
 
 class MyWindow(QMainWindow):
@@ -95,25 +105,28 @@ class MyWindow(QMainWindow):
         function_bar.setGeometry(0, 880, 1920, 200)  # 設置功能列的尺寸
         function_bar.setStyleSheet("background-color: lightgray;")  # 設置背景顏色
 
-        # 創建一個放置元件的頂層佈局
-        layout = QVBoxLayout(central_widget)
-        layout.setContentsMargins(0, 0, 0, 0)  # 消除佈局的邊距
-        layout.setSpacing(0)
+        # 創建一個放置元件的底層佈局
+        global_layout = QVBoxLayout(central_widget)
+        global_layout.setContentsMargins(0, 0, 0, 0)  # 消除佈局的邊距
+        global_layout.setSpacing(0)
 
         # 添加狀態列到佈局
-        layout.addWidget(status_bar, 1)  # 狀態列佔用 1 的高度
+        global_layout.addWidget(status_bar, 1)  # 狀態列佔用 1 的高度
 
         # 創建一個放置元件的子佈局
-        grid_layout = QHBoxLayout()
-        grid_layout.setSpacing(0)
-        grid_layout.addWidget(main_frame, 1)  # 添加主畫面到佈局，第二個參數是優先級，表示佔用100的寬度
-        grid_layout.addWidget(self.sub_frame, 1) # 添加子畫面到佈局
-        layout.addLayout(grid_layout,8) # 添加子佈局到佈局
-        layout.addWidget(function_bar, 2)  # 添加功能列到佈局，功能列佔用 2 的高度
+        main_layout = QHBoxLayout()
+        main_layout.setSpacing(0)
+        main_layout.addWidget(main_frame, 1)  # 添加主畫面到佈局，第二個參數是優先級，表示佔用100的寬度
+        main_layout.addWidget(self.sub_frame, 1) # 添加子畫面到佈局
+        global_layout.addLayout(main_layout,8) # 添加子佈局到佈局
+        global_layout.addWidget(function_bar, 2)  # 添加功能列到佈局，功能列佔用 2 的高度
 
+        
         # 在功能列中添加按鈕
         save_button = QPushButton('資料儲存', function_bar)
-        lock_label = QLabel('螢幕鎖',function_bar)
+        # test_button = QPushButton('測試', function_bar)
+        self.lock_label = QLabel('螢幕鎖',function_bar)
+        self.logout_button = QPushButton('登出', function_bar)
         self.menu_button = QPushButton('選單', function_bar)
         self.return_button = QPushButton('返回', function_bar)
 
@@ -121,13 +134,17 @@ class MyWindow(QMainWindow):
         button_width, button_height = 200, 200
 
         save_button.setFixedSize(button_width, button_height)
-        # lock_label.setFixedSize(button_width, button_height)
+        # test_button.setFixedSize(button_width, button_height)
+        # self.lock_label.setFixedSize(button_width, button_height)
+        self.logout_button.setFixedSize(button_width, button_height)
         self.menu_button.setFixedSize(button_width, button_height)
         self.return_button.setFixedSize(button_width, button_height)
         
         self.font.setPointSize(36)
         save_button.setFont(self.font)
-        lock_label.setFont(self.font)
+        # test_button.setFont(self.font)
+        self.lock_label.setFont(self.font)
+        self.logout_button.setFont(self.font)
         self.menu_button.setFont(self.font)
         self.return_button.setFont(self.font)
 
@@ -137,35 +154,54 @@ class MyWindow(QMainWindow):
         # print("Absolute path of image:", os.path.abspath(lock_icon_path))
 
         # lock_icon_path = "picture/lock_icon.png"
-        lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
-        lock_icon_base64 = self.image_to_base64(lock_icon_path) # 使用 lock_icon_base64
-        lock_icon_bytes = QByteArray.fromBase64(lock_icon_base64.encode())
-        lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(lock_icon_bytes)))
+        self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
+        self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
+        self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
+        self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
         # lock_pixmap = QPixmap(lock_icon_path)
         # lock_label.setPixmap(lock_pixmap.scaled(button_width, button_height, Qt.KeepAspectRatio))
 
-
-
         # 將 SpacerItem 插入按鈕之間，靠左、置中、靠右
-        spacer_left = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        spacer_right = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer_right = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer_left = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         function_bar_layout = QHBoxLayout(function_bar)
-        function_bar_layout.addWidget(save_button)
-        function_bar_layout.addItem(spacer_left)
-        function_bar_layout.addWidget(lock_label)
-        function_bar_layout.addItem(spacer_right)
-        function_bar_layout.addWidget(self.menu_button)
-        function_bar_layout.addWidget(self.return_button)
+
+        function_bar_layout1 = QHBoxLayout()
+        function_bar_layout2 = QHBoxLayout()
+        function_bar_layout3 = QHBoxLayout()
+
+        function_bar_layout1.addWidget(save_button)
+        # function_bar_layout1.addWidget(test_button)
+        function_bar_layout1.addItem(spacer)
+
+        function_bar_layout2.addItem(spacer_right)
+        function_bar_layout2.addWidget(self.lock_label)
+        function_bar_layout2.addItem(spacer_left)
+        
+        function_bar_layout3.addItem(spacer)
+        function_bar_layout3.addWidget(self.logout_button)
+        function_bar_layout3.addWidget(self.menu_button)
+        function_bar_layout3.addWidget(self.return_button)
+
+        function_bar_layout.addLayout(function_bar_layout1, 1)
+        function_bar_layout.addLayout(function_bar_layout2, 1)
+        function_bar_layout.addLayout(function_bar_layout3, 1)
 
         self.menu_button.clicked.connect(self.switch_to_menu)
         self.return_button.clicked.connect(self.switch_to_previous_page)
+        self.logout_button.clicked.connect(self.logout_button_click)
 
+        self.logout_button.setVisible(False)
         self.menu_button.setVisible(True)
         self.return_button.setVisible(False)
 
         # 顯示視窗
         self.show()
+
+    def testClicked(self):
+        print('測試按鈕')
 
     def update_datetime(self):
         current_datetime = QDateTime.currentDateTime()
@@ -175,6 +211,26 @@ class MyWindow(QMainWindow):
         # 新增以下兩行以更新折線圖
         self.plot_canvas.plot()
         self.plot_canvas.draw()
+
+    def handle_login_success(self, checkLogin):
+        # 登入成功時觸發，將 logout_button 由不可見改為可見
+        print('收到 login_successful 信號:', checkLogin)
+        self.logout_button.setVisible(True)
+        print('logout_button:',self.logout_button.isVisible())
+        self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "unlock_icon.png")
+        self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
+        self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
+        self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
+
+    def logout_button_click(self):
+        self.logout_button.setVisible(not self.logout_button.isVisible()) 
+        print('logout_button_click:',self.logout_button.isVisible())
+        self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
+        self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
+        self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
+        self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
+
+
 
     # 在MyWindow類別中新增一個方法用於切換畫面
     def switch_to_menu(self):
@@ -258,7 +314,7 @@ class MyWindow(QMainWindow):
         # 判斷是否已經創建了該子畫面
         if page_name not in self.sub_pages or not self.stacked_widget.widget(self.sub_pages[page_name]):
             # 如果還沒有，則創建一個新的子畫面
-            sub_page = menuSubFrame(page_name, _style, self.sub_pages, self.stacked_widget)
+            sub_page = menuSubFrame(page_name, _style, self.sub_pages, self.stacked_widget, self)
 
             # 添加到堆疊中
             sub_page_index = self.stacked_widget.addWidget(sub_page)
@@ -317,18 +373,16 @@ class MyWindow(QMainWindow):
         print('Current Page Index:', self.current_page_index) 
 
 
-    def image_to_base64(self, image_path):
-        with open(image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read())
-            return encoded_image.decode("utf-8")
 
 
 if __name__ == '__main__':
     print("Current working directory:", os.getcwd())
     app = QApplication(sys.argv)
-    try:
-        window = MyWindow()
-        sys.exit(app.exec_())
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        input("Press Enter to exit")  # 等待使用者按 Enter 鍵
+    window = MyWindow()
+    sys.exit(app.exec_())
+    # try:
+    #     window = MyWindow()
+    #     sys.exit(app.exec_())
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
+    #     input("Press Enter to exit")  # 等待使用者按 Enter 鍵

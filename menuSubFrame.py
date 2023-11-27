@@ -1,6 +1,7 @@
 #zh-tw
+
 # menuSubFrame.py
-# 當Snetrak_Raspberry_GUI.py的功能選單的四個按鈕（設定、校正、記錄、識別）偵測到點擊事件時，所執行的程式碼並將子畫面刷新為清單畫面
+# 些程式碼為選單畫面：當Snetrak_Raspberry_GUI.py的功能選單的四個按鈕（設定、校正、記錄、識別）偵測到點擊事件時，所執行的程式碼並將子畫面刷新為清單畫面
 
 import os, sys, base64
 
@@ -9,15 +10,19 @@ from PyQt5.QtCore import Qt, pyqtSignal, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from testEndFrame import testEndFrame
+from id_Frame import id_LogIn_Frame
+from img_to_base64 import image_to_base64
 
 class menuSubFrame(QWidget):
     # 定義自定義信號
-    item_clicked = pyqtSignal(str, str)
+    # item_clicked = pyqtSignal(str, str)
 
-    def __init__(self, title, _style, sub_pages, stacked_widget):
+    def __init__(self, title, _style, sub_pages, stacked_widget, main_window):
         super().__init__()
         self.sub_pages = sub_pages
+        self.main_window = main_window
         self.stacked_widget = stacked_widget
+        self.id_login_frame = id_LogIn_Frame
 
         self.title = title
         print(self.title)
@@ -33,7 +38,7 @@ class menuSubFrame(QWidget):
         self.title_label.setStyleSheet(_style)
         title_layout.addWidget(self.title_label)
 
-        self.font.setPointSize(84)
+        self.font.setPointSize(72)
 
         content_layout = QVBoxLayout()
         content_layout.setContentsMargins(0, 0, 0, 0)
@@ -79,7 +84,7 @@ class menuSubFrame(QWidget):
         list_icon = QLabel()
         # pixmap = QPixmap('picture/test_icon.png')  # 請替換為您的實際圖示路徑
         list_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "test_icon.png")
-        icon_base64 = self.image_to_base64(list_icon_path)
+        icon_base64 = image_to_base64(list_icon_path)
         icon_bytes = QByteArray.fromBase64(icon_base64.encode())
         list_icon.setPixmap(QPixmap.fromImage(QImage.fromData(icon_bytes)).scaled(72, 72))
          
@@ -106,7 +111,8 @@ class menuSubFrame(QWidget):
         self.list_widget.setItemWidget(item, widget)  # 將 widget 與 item 關聯起來
 
         # 設置點擊事件處理函數，連接點擊信號
-        self.list_widget.itemClicked.connect(self.handle_record_item_click)
+        # self.list_widget.itemClicked.connect(self.handle_record_item_click)
+        self.list_widget.itemClicked.connect(lambda item: self.handle_record_item_click(item))
 
 
     # 在 MyWindow 類別中新增一個槽函數處理 '' 頁面 item 被點擊的信號
@@ -114,28 +120,33 @@ class menuSubFrame(QWidget):
         # 在這裡處理四個功能頁面下 item 被點擊的事件
         # 例如，切換到 testEndFrame 並顯示被點擊的項目文字
         item_text = item.data(Qt.UserRole)
-        print('子畫面：', item_text)
+        # print('子畫面：', item_text)
 
-        print(f"Item Clicked: {item_text} in '{self.title_label.text()}' clicked. Switching to testEndFrame.")
+        # print(f"Item Clicked: {item_text} in '{self.title_label.text()}' clicked. Switching to testEndFrame.")
 
         # 判斷是否已經創建了 testEndFrame
         if item_text not in self.sub_pages: #"testEndFrame"
-            # 如果還沒有，則創建一個新的 testEndFrame
-            test_end_frame = testEndFrame(item_text, self.title_label.styleSheet())
-            # 添加到堆疊中
-            test_end_frame_index = self.stacked_widget.addWidget(test_end_frame)
-            self.sub_pages[item_text] = test_end_frame_index
+            print(item_text, item_text == '登入身份')
+            if item_text == '登入身份':
+
+                # 如果還沒有，則創建一個新的 testEndFrame
+                login_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.main_window)
+                # 添加到堆疊中
+                next_frame_index = self.stacked_widget.addWidget(login_frame)
+                self.sub_pages[item_text] = next_frame_index
+
+            else:
+                # 如果還沒有，則創建一個新的 testEndFrame
+                test_end_frame = testEndFrame(item_text, self.title_label.styleSheet())
+                # 添加到堆疊中
+                next_frame_index = self.stacked_widget.addWidget(test_end_frame)
+                self.sub_pages[item_text] = next_frame_index
         else:
-            # 如果已經存在，取得 testEndFrame 的索引
-            test_end_frame_index = self.sub_pages[item_text]
+            # 如果已經存在，取得 下一頁（testEndFrame） 的索引
+            next_frame_index = self.sub_pages[item_text]
 
         # 設定當前顯示的子畫面索引為 testEndFrame
-        self.stacked_widget.setCurrentIndex(test_end_frame_index)
-        self.current_page_index = test_end_frame_index
+        self.stacked_widget.setCurrentIndex(next_frame_index)
+        self.current_page_index = next_frame_index
 
         print('Current Page Index:', self.current_page_index)
-
-    def image_to_base64(self, image_path):
-        with open(image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read())
-            return encoded_image.decode("utf-8")

@@ -27,3 +27,4 @@ class testEndFrame(QWidget):
         end_sub_frame_layout.setContentsMargins(0, 0, 0, 0)
         end_sub_frame_layout.setSpacing(0) 
         end_sub_frame_layout.addWidget(end_label)
+        print('終節點測試畫面：', title)
