@@ -373,16 +373,14 @@ class MyWindow(QMainWindow):
         print('Current Page Index:', self.current_page_index) 
 
 
-
-
 if __name__ == '__main__':
     print("Current working directory:", os.getcwd())
     app = QApplication(sys.argv)
-    window = MyWindow()
-    sys.exit(app.exec_())
-    # try:
-    #     window = MyWindow()
-    #     sys.exit(app.exec_())
-    # except Exception as e:
-    #     print(f"An error occurred: {e}")
-    #     input("Press Enter to exit")  # 等待使用者按 Enter 鍵
+    # window = MyWindow()
+    # sys.exit(app.exec_())
+    try:
+        window = MyWindow()
+        sys.exit(app.exec_())
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        input("Press Enter to exit")  # 等待使用者按 Enter 鍵

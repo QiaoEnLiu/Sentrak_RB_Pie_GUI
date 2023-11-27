@@ -124,6 +124,8 @@ class id_LogIn_Frame(QWidget):
         self.password_denial_label.setVisible(False)
         self.login_label.setVisible(False)
 
+        self.main_window.logout_button.clicked.connect(self.logout_button_click)
+
         if self.main_window.logout_button.isVisible():
             self.username_label.setVisible(False)
             self.username_input.setVisible(False)
@@ -131,10 +133,15 @@ class id_LogIn_Frame(QWidget):
             self.password_input.setVisible(False)
             self.login_label.setVisible(True)
             self.login_button.setVisible(False)
+        else:
+            self.username_label.setVisible(True)
+            self.username_input.setVisible(True)
+            self.password_label.setVisible(True)
+            self.password_input.setVisible(True)
+            self.login_label.setVisible(False)
+            self.login_button.setVisible(True)
 
             
-
-
 
         # print("Connected handle_login_success to login_successful signal.")
         

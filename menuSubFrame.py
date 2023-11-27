@@ -75,6 +75,8 @@ class menuSubFrame(QWidget):
         main_layout.addLayout(title_layout)
         main_layout.addLayout(content_layout)
 
+        # self.main_window.logout_button.clicked.connect(self.logout_button_click)
+
 
     def create_list_item(self, option):
         # 創建 QListWidgetItem
