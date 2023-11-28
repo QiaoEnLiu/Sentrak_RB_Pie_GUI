@@ -3,23 +3,18 @@
 # Sentrak_RaspberryPie_GUI.py
 # 此程式碼為主畫面，顯示折線圖為主
 
-import os, sys, base64
+import os, sys, base64, traceback, atexit, logging, subprocess
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
       QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
       QPushButton, QStackedWidget
-from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray,\
-      QObject, pyqtSignal, QMetaObject
+from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from PlotCanvas import PlotCanvas
 from menuSubFrame import menuSubFrame
-from id_Frame import id_LogIn_Frame
 from img_to_base64 import image_to_base64
-
-
-import functools
 
 
 class MyWindow(QMainWindow):
@@ -231,7 +226,6 @@ class MyWindow(QMainWindow):
         self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
 
 
-
     # 在MyWindow類別中新增一個方法用於切換畫面
     def switch_to_menu(self):
 
@@ -374,13 +368,13 @@ class MyWindow(QMainWindow):
 
 
 if __name__ == '__main__':
+
     print("Current working directory:", os.getcwd())
     app = QApplication(sys.argv)
-    # window = MyWindow()
-    # sys.exit(app.exec_())
     try:
         window = MyWindow()
         sys.exit(app.exec_())
     except Exception as e:
         print(f"An error occurred: {e}")
         input("Press Enter to exit")  # 等待使用者按 Enter 鍵
+        

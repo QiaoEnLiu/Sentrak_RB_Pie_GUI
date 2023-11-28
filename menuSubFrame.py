@@ -11,6 +11,7 @@ from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from testEndFrame import testEndFrame
 from id_Frame import id_LogIn_Frame
+from deviceInfo import deviceInfoFrame
 from img_to_base64 import image_to_base64
 
 class menuSubFrame(QWidget):
@@ -75,9 +76,6 @@ class menuSubFrame(QWidget):
         main_layout.addLayout(title_layout)
         main_layout.addLayout(content_layout)
 
-        # self.main_window.logout_button.clicked.connect(self.logout_button_click)
-
-
     def create_list_item(self, option):
         # 創建 QListWidgetItem
         item = QListWidgetItem()
@@ -122,27 +120,26 @@ class menuSubFrame(QWidget):
         # 在這裡處理四個功能頁面下 item 被點擊的事件
         # 例如，切換到 testEndFrame 並顯示被點擊的項目文字
         item_text = item.data(Qt.UserRole)
-        # print('子畫面：', item_text)
-
-        # print(f"Item Clicked: {item_text} in '{self.title_label.text()}' clicked. Switching to testEndFrame.")
 
         # 判斷是否已經創建了 testEndFrame
         if item_text not in self.sub_pages: #"testEndFrame"
-            print(item_text, item_text == '登入身份')
+            print('進入選項：', item_text)
             if item_text == '登入身份':
 
-                # 如果還沒有，則創建一個新的 testEndFrame
-                login_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.main_window)
-                # 添加到堆疊中
-                next_frame_index = self.stacked_widget.addWidget(login_frame)
-                self.sub_pages[item_text] = next_frame_index
+                # 進入「登入身份」介面
+                next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.main_window)
 
+            elif item_text == '儀器資訊': 
+                # 進入「儀器資訊」介面，暫以本機開發硬體測試
+                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet())
+            
             else:
-                # 如果還沒有，則創建一個新的 testEndFrame
-                test_end_frame = testEndFrame(item_text, self.title_label.styleSheet())
-                # 添加到堆疊中
-                next_frame_index = self.stacked_widget.addWidget(test_end_frame)
-                self.sub_pages[item_text] = next_frame_index
+                # 如果還沒有，則創建一個新的 testEndFrame 為終節點畫面測試
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet())
+                
+            # 添加到堆疊中
+            next_frame_index = self.stacked_widget.addWidget(next_frame)
+            self.sub_pages[item_text] = next_frame_index
         else:
             # 如果已經存在，取得 下一頁（testEndFrame） 的索引
             next_frame_index = self.sub_pages[item_text]

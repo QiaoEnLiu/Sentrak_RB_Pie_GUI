@@ -2,9 +2,9 @@
 
 # id_Frame.py
 
-#此程式碼為「識別」底下「登入身份」、「儀器資訊」、「感測器資訊」程式碼
+#此程式碼為「識別」底下「登入身份」程式碼
 #--「登入身份」為id_LogIn_Fram
-#--「儀器資訊」、「感測器資訊」暫時進入testEndFrame.py
+#--「感測器資訊」暫時進入testEndFrame.py
 
 from PyQt5 import QtCore
 
@@ -142,7 +142,6 @@ class id_LogIn_Frame(QWidget):
             self.login_button.setVisible(True)
 
             
-
         # print("Connected handle_login_success to login_successful signal.")
         
     def login_successful_callback(self, checkLogin):
