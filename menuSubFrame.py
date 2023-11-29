@@ -5,7 +5,8 @@
 
 import os, sys
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget,\
+      QListWidgetItem, QHBoxLayout, QFrame
 from PyQt5.QtCore import Qt, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
@@ -39,11 +40,9 @@ class menuSubFrame(QWidget):
         self.title_label.setStyleSheet(_style)
         title_layout.addWidget(self.title_label)
 
-        self.font.setPointSize(72)
-
         content_layout = QVBoxLayout()
-        content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(0)
+        # content_layout.setContentsMargins(0, 0, 0, 0)
+        # content_layout.setSpacing(0)
 
         # 內容使用QListWidget
         self.list_widget = QListWidget(self)
@@ -52,57 +51,107 @@ class menuSubFrame(QWidget):
         if self.title == '設定':
             for option in ['顯示', '警報輸出', '類比輸出', '感測器溫度保護', '診斷', '通訊', '時間', '語言']:
                 self.create_list_item(option)
+                self.itemDeescribe(option)
 
         elif self.title == '校正':
             for option in ['感測器校正', '大氣壓力校正', '類比輸出校正']:
                 self.create_list_item(option)
+                self.itemDeescribe(option)
 
         elif self.title == '記錄':
             for option in ['觀看記錄', '統計表', '下載記錄至隨身碟', '記錄方式設定']:
                 self.create_list_item(option)
+                self.itemDeescribe(option)
 
         elif self.title == '識別':
             for option in ['登入身份', '儀器資訊', '感測器資訊']:
                 self.create_list_item(option)
-        
+                self.itemDeescribe(option)
+
         # 將垂直滾動條設置為不可見
         self.list_widget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         content_layout.addWidget(self.list_widget)
 
         # 整體佈局
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        # main_layout.setContentsMargins(0, 0, 0, 0)
+        # main_layout.setSpacing(0)
         main_layout.addLayout(title_layout)
         main_layout.addLayout(content_layout)
 
     def create_list_item(self, option):
+
         # 創建 QListWidgetItem
         item = QListWidgetItem()
-
+        
         # 設置圖示
-        list_icon = QLabel()
-        # pixmap = QPixmap('picture/test_icon.png')  # 請替換為您的實際圖示路徑
+        list_icon = QLabel('圖示')
+        list_icon.setStyleSheet("border: 5px solid black;border-right: 0px;")
+        
+        pixmap = QPixmap('picture/test_icon.png')  # 請替換為您的實際圖示路徑
         list_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "test_icon.png")
         icon_base64 = image_to_base64(list_icon_path)
         icon_bytes = QByteArray.fromBase64(icon_base64.encode())
-        list_icon.setPixmap(QPixmap.fromImage(QImage.fromData(icon_bytes)).scaled(72, 72))
+        list_icon.setPixmap(QPixmap.fromImage(QImage.fromData(icon_bytes)).scaled(144, 144))
+        # print('icon Hright1:', list_icon.pixmap().height())
+        # print('icon Hright2:', pixmap.scaledToHeight(144).height())
+
+        # label_font = list_icon.font()  # 獲取 QLabel 的字型
+        # font_size = label_font.pointSize()  # 獲取字型大小
+        # print('icon Hright Font:', font_size)
          
         # list_icon.setPixmap(pixmap.scaled(72, 72))  # 調整大小以符合您的需求
-        item_label = QLabel(option )# 設置文字
-         
-        # 將圖示和文字排列在一行
-        layout = QHBoxLayout()
+        item_label = QLabel(option)# 設置文字
+        self.describe_label = QLabel()
 
+        self.font.setPointSize(pixmap.scaledToHeight(144).height()*30//80)
+        # self.font.setPointSize(42)
+        item_label.setFont(self.font)
+        item_label.setStyleSheet("border: 5px solid black;border-bottom: 0px;")
+        item_label.setContentsMargins(0, 0, 0, 0)
+
+        self.describe_label.setText('描述')
+        self.font.setPointSize(pixmap.scaledToHeight(144).height()*15//80)
+        # self.font.setPointSize(12)
+        self.describe_label.setFont(self.font)
+        self.describe_label.setStyleSheet("border: 5px solid black;border-top: 0px; color: gray")
+        self.describe_label.setContentsMargins(0, 0, 0, 0)
+
+        # 將圖示和文字排列在一行
+        item_layout = QHBoxLayout()
+        icon_layout = QHBoxLayout()
+        label_layout = QVBoxLayout()
+        item_label_layout = QHBoxLayout()
+        describe_layout = QHBoxLayout()
+
+        item_layout.setSizeConstraint(QHBoxLayout.SetMinAndMaxSize)
+        icon_layout.setSizeConstraint(QHBoxLayout.SetMinAndMaxSize)
+        label_layout.setSizeConstraint(QVBoxLayout.SetMinAndMaxSize)
+        item_label_layout.setSizeConstraint(QVBoxLayout.SetMinAndMaxSize)
+        describe_layout.setSizeConstraint(QVBoxLayout.SetMinAndMaxSize)
+
+        # item_layout.addWidget(item_frame)
         # 將圖示和文字排列在一行，並確保沒有額外空間
-        layout.setSpacing(0)
-        layout.addWidget(list_icon)
-        layout.addWidget(item_label)
-        layout.addStretch(1)  # 添加伸縮因子
-                
+        item_layout.setSpacing(0)
+        icon_layout.addWidget(list_icon)
+
+        label_layout.addLayout(item_label_layout)
+        label_layout.addLayout(describe_layout)
+
+        item_label_layout.addWidget(item_label)
+        describe_layout.addWidget(self.describe_label)
+
+        item_layout.addLayout(icon_layout)
+        item_layout.addLayout(label_layout,1)
+
+        # item_layout.setStretch(0,1)  # 添加伸縮因子
+
         # 設置項目的布局
         widget = QWidget()
-        widget.setLayout(layout)
+        # 將 itemFrame 設置為 widget 的子 widget
+        widget.setLayout(item_layout)
+
+        item.setSizeHint(widget.sizeHint())
 
         # 將項目添加到 QListWidget
         item.setData(Qt.UserRole, option)  # 使用setData將選項存儲為UserRole
@@ -110,9 +159,24 @@ class menuSubFrame(QWidget):
         self.list_widget.setFont(self.font)
         self.list_widget.setItemWidget(item, widget)  # 將 widget 與 item 關聯起來
 
+
         # 設置點擊事件處理函數，連接點擊信號
-        # self.list_widget.itemClicked.connect(self.handle_record_item_click)
         self.list_widget.itemClicked.connect(lambda item: self.handle_record_item_click(item))
+
+
+
+    def itemDeescribe(self, option):
+        item_title = option
+        if item_title == '顯示':
+            self.describe_label.setText('波形圖週期、單位')
+        elif item_title == '警報輸出':
+            self.describe_label.setText('Relay 1、Relay 2、Relay 3…')
+        elif item_title == '類比輸出':
+            self.describe_label.setText('濃度、溫度、類型')
+        elif item_title == '感測器溫度保護':
+            self.describe_label.setText('狀態、溫度設定')
+        else :
+            self.describe_label.setText('描述')
 
 
     # 在 MyWindow 類別中新增一個槽函數處理 '' 頁面 item 被點擊的信號

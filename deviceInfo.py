@@ -33,12 +33,12 @@ class deviceInfoFrame(QWidget):
         title_layout.addWidget(self.title_label)
         # self.font.setPointSize(72)
 
-        title_layout.setContentsMargins(0, 0, 0, 0)
-        title_layout.setSpacing(0)
+        # title_layout.setContentsMargins(0, 0, 0, 0)
+        # title_layout.setSpacing(0)
 
         deviceInfo_layout = QVBoxLayout()
-        deviceInfo_layout.setContentsMargins(0, 0, 0, 0)
-        deviceInfo_layout.setSpacing(0)
+        # deviceInfo_layout.setContentsMargins(0, 0, 0, 0)
+        # deviceInfo_layout.setSpacing(0)
 
         self.deviceInfo_label = QLabel()
         # title_label.setAlignment(Qt.AlignCenter)  
@@ -57,8 +57,8 @@ class deviceInfoFrame(QWidget):
 
         # 整體佈局
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        # main_layout.setContentsMargins(0, 0, 0, 0)
+        # main_layout.setSpacing(0)
         main_layout.addLayout(title_layout)
         main_layout.addLayout(deviceInfo_layout)
 
@@ -173,12 +173,12 @@ class deviceInfoFrame(QWidget):
             interfaces = psutil.net_if_addrs()
             result = []
             for interface, addresses in interfaces.items():
-                result.append(f'Interface: {interface}')
+                result.append(f' Interface: {interface}')
                 for address in addresses:
-                    result.append(f'  Address Family: {address.family}')
-                    result.append(f'    Address: {address.address}')
-                    result.append(f'    Netmask: {address.netmask}')
-                    result.append(f'    Broadcast: {address.broadcast}')
+                    result.append(f'   Address Family: {address.family}')
+                    result.append(f'     Address: {address.address}')
+                    result.append(f'     Netmask: {address.netmask}')
+                    result.append(f'     Broadcast: {address.broadcast}')
             return result
         except Exception as e:
             return f'無法取得網路介面資訊: {e}'

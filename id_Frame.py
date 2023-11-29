@@ -105,7 +105,7 @@ class id_LogIn_Frame(QWidget):
         # 垂直佈局，包含所有元素
         #zh-tw 以下程式碼顯示方式為title_layout高度符合他內部元件的高度，login_bt_layout高度符合他內部元件的高度並壓在最底下，而username_layout及password_layout將剩餘的高度平均分配。
         id_LogIn_frame_layout = QVBoxLayout(self)
-        id_LogIn_frame_layout.setContentsMargins(0, 0, 0, 0)
+        # id_LogIn_frame_layout.setContentsMargins(0, 0, 0, 0)
         id_LogIn_frame_layout.setSpacing(0)
         id_LogIn_frame_layout.addLayout(title_layout)
         id_LogIn_frame_layout.addStretch(1)
