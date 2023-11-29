@@ -6,7 +6,6 @@
 #--「登入身份」為id_LogIn_Fram
 #--「感測器資訊」暫時進入testEndFrame.py
 
-from PyQt5 import QtCore
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QPushButton

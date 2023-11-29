@@ -3,8 +3,7 @@
 # Sentrak_RaspberryPie_GUI.py
 # 此程式碼為主畫面，顯示折線圖為主
 
-import os, sys, base64, traceback, atexit, logging, subprocess
-from PyQt5 import QtWidgets
+import os, sys
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
       QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\

@@ -1,0 +1,1 @@
+pyinstaller --onefile --add-data "picture/;picture" --hidden-import=psutil Sentrak_RaspberryPie_GUI.py

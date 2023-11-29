@@ -9,7 +9,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QScrollArea
 from PyQt5.QtGui import QFont
 
-import platform, os, psutil, subprocess, re
+import platform, os, subprocess, re
+import psutil
 # import RPi.GPIO as GPIO
 
 
@@ -68,6 +69,7 @@ class deviceInfoFrame(QWidget):
         gpu_info = 'GPU 資訊:' + self.get_gpu_info() + '\n'
         print(gpu_info)
 
+        # memory_info ='記憶體資訊:' + '暫未提供' + '\n'
         memory_info ='記憶體資訊:' + self.get_memory_info() + '\n'
         print(memory_info)
 
@@ -76,6 +78,7 @@ class deviceInfoFrame(QWidget):
             # disk_info += info + '\n'
         print(disk_info)
 
+        # network_info = '網路介面資訊:' + '暫未提供' + '\n'
         network_info = '網路介面資訊:' + '\n'
         for line in self.get_network_info():
             network_info += line + '\n'

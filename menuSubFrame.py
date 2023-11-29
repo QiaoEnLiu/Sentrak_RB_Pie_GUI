@@ -3,10 +3,10 @@
 # menuSubFrame.py
 # 些程式碼為選單畫面：當Snetrak_Raspberry_GUI.py的功能選單的四個按鈕（設定、校正、記錄、識別）偵測到點擊事件時，所執行的程式碼並將子畫面刷新為清單畫面
 
-import os, sys, base64
+import os, sys
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, QHBoxLayout
-from PyQt5.QtCore import Qt, pyqtSignal, QByteArray
+from PyQt5.QtCore import Qt, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
 from testEndFrame import testEndFrame
