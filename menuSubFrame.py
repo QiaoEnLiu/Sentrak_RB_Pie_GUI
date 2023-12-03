@@ -6,7 +6,7 @@
 import os, sys
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget,\
-      QListWidgetItem, QHBoxLayout, QFrame
+      QListWidgetItem, QHBoxLayout
 from PyQt5.QtCore import Qt, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
@@ -16,8 +16,7 @@ from deviceInfo import deviceInfoFrame
 from img_to_base64 import image_to_base64
 
 class menuSubFrame(QWidget):
-    # 定義自定義信號
-    # item_clicked = pyqtSignal(str, str)
+
 
     def __init__(self, title, _style, sub_pages, stacked_widget, main_window):
         super().__init__()
@@ -74,8 +73,8 @@ class menuSubFrame(QWidget):
 
         # 整體佈局
         main_layout = QVBoxLayout(self)
-        # main_layout.setContentsMargins(0, 0, 0, 0)
-        # main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
         main_layout.addLayout(title_layout)
         main_layout.addLayout(content_layout)
 
@@ -109,6 +108,7 @@ class menuSubFrame(QWidget):
         item_label.setFont(self.font)
         item_label.setStyleSheet("border: 5px solid black;border-bottom: 0px;")
         item_label.setContentsMargins(0, 0, 0, 0)
+        print('item_label:', item_label.font().pointSize())
 
         self.describe_label.setText('描述')
         self.font.setPointSize(pixmap.scaledToHeight(144).height()*15//80)
@@ -116,6 +116,7 @@ class menuSubFrame(QWidget):
         self.describe_label.setFont(self.font)
         self.describe_label.setStyleSheet("border: 5px solid black;border-top: 0px; color: gray")
         self.describe_label.setContentsMargins(0, 0, 0, 0)
+        print('self.describe_label:', self.describe_label.font().pointSize())
 
         # 將圖示和文字排列在一行
         item_layout = QHBoxLayout()
