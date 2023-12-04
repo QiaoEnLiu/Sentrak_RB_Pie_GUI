@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import \
 from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
-from PlotCanvas import PlotCanvas
+from plotCanvas import PlotCanvas
 from menuSubFrame import menuSubFrame
 from img_to_base64 import image_to_base64
 
