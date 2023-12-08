@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import \
 from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
-from plotCanvas import PlotCanvas
+from plotCanvas import plotCanvas
 from menuSubFrame import menuSubFrame
 from img_to_base64 import image_to_base64
 
@@ -19,7 +19,7 @@ from img_to_base64 import image_to_base64
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.plot_canvas = PlotCanvas(self, width=5, height=4)
+        self.plot_canvas = plotCanvas(self, width=5, height=4)
 
         # 設置主視窗的尺寸
         self.setFixedSize(1920, 1080)

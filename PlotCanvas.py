@@ -3,13 +3,13 @@
 #初始子畫面折線圖
 
 
-import numpy as np
+import numpy
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # matplotlib.use('Qt5Agg')
 
-class PlotCanvas(FigureCanvas):
+class plotCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig, self.ax = plt.subplots(figsize=(width, height), dpi=dpi)
         super().__init__(fig)
@@ -17,8 +17,8 @@ class PlotCanvas(FigureCanvas):
 
     def plot(self):
         # 這裡是簡單的範例，你可以根據你的數據自行調整
-        x = np.linspace(0, 10, 100)
-        y = np.sin(x)
+        x = numpy.linspace(0, 10, 100)
+        y = numpy.sin(x)
 
         self.ax.plot(x, y)
         self.ax.set_title('Plot', fontdict={'fontsize': 32, 'fontweight': 'bold'})
