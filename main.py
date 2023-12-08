@@ -7,7 +7,7 @@ import os, sys
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
       QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
-      QPushButton, QStackedWidget
+      QPushButton, QStackedWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
 from PyQt5.QtGui import QFont, QPixmap, QImage
 
@@ -78,6 +78,20 @@ class MyWindow(QMainWindow):
         self.sub_frame_layout.addWidget(self.plot_canvas) # 在子畫面中加入 Matplotlib 的畫布
         # self.sub_frame_layout.addWidget(sub_label)
 
+        # 創建功能列
+        function_bar = QFrame(self)
+        function_bar.setGeometry(0, 880, 1920, 200)  # 設置功能列的尺寸
+        function_bar.setStyleSheet("background-color: lightgray;")  # 設置背景顏色
+
+        # 在功能列中添加按鈕
+        save_button = QPushButton('資料儲存', function_bar)
+        # test_button = QPushButton('測試', function_bar)
+        self.quit_button=QPushButton('離開',function_bar)
+        self.lock_label = QLabel('螢幕鎖',function_bar)
+        self.logout_button = QPushButton('登出', function_bar)
+        self.menu_button = QPushButton('選單', function_bar)
+        self.return_button = QPushButton('返回', function_bar)
+
         # 在 MyWindow 類別的 __init__ 方法中初始化 QStackedWidget
         self.stacked_widget = QStackedWidget(self.sub_frame)
         self.plot_page_index = self.stacked_widget.addWidget(self.plot_canvas) # 此處僅添加 plot 畫面
@@ -94,10 +108,6 @@ class MyWindow(QMainWindow):
         # 將QStackedWidget添加到sub_frame佈局
         self.sub_frame_layout.addWidget(self.stacked_widget)
 
-        # 創建功能列
-        function_bar = QFrame(self)
-        function_bar.setGeometry(0, 880, 1920, 200)  # 設置功能列的尺寸
-        function_bar.setStyleSheet("background-color: lightgray;")  # 設置背景顏色
 
         # 創建一個放置元件的底層佈局
         global_layout = QVBoxLayout(central_widget)
@@ -116,19 +126,13 @@ class MyWindow(QMainWindow):
         global_layout.addWidget(function_bar, 2)  # 添加功能列到佈局，功能列佔用 2 的高度
 
         
-        # 在功能列中添加按鈕
-        save_button = QPushButton('資料儲存', function_bar)
-        # test_button = QPushButton('測試', function_bar)
-        self.lock_label = QLabel('螢幕鎖',function_bar)
-        self.logout_button = QPushButton('登出', function_bar)
-        self.menu_button = QPushButton('選單', function_bar)
-        self.return_button = QPushButton('返回', function_bar)
 
         # 設定按鈕大小
         button_width, button_height = 200, 200
 
         save_button.setFixedSize(button_width, button_height)
         # test_button.setFixedSize(button_width, button_height)
+        self.quit_button.setFixedSize(button_width,button_height)
         # self.lock_label.setFixedSize(button_width, button_height)
         self.logout_button.setFixedSize(button_width, button_height)
         self.menu_button.setFixedSize(button_width, button_height)
@@ -137,6 +141,7 @@ class MyWindow(QMainWindow):
         self.font.setPointSize(36)
         save_button.setFont(self.font)
         # test_button.setFont(self.font)
+        self.quit_button.setFont(self.font)
         self.lock_label.setFont(self.font)
         self.logout_button.setFont(self.font)
         self.menu_button.setFont(self.font)
@@ -168,6 +173,7 @@ class MyWindow(QMainWindow):
 
         function_bar_layout1.addWidget(save_button)
         # function_bar_layout1.addWidget(test_button)
+        function_bar_layout1.addWidget(self.quit_button)
         function_bar_layout1.addItem(spacer)
 
         function_bar_layout2.addItem(spacer_right)
@@ -183,6 +189,7 @@ class MyWindow(QMainWindow):
         function_bar_layout.addLayout(function_bar_layout2, 1)
         function_bar_layout.addLayout(function_bar_layout3, 1)
 
+        self.quit_button.clicked.connect(self.show_confirmation_dialog)
         self.menu_button.clicked.connect(self.switch_to_menu)
         self.return_button.clicked.connect(self.switch_to_previous_page)
         self.logout_button.clicked.connect(self.logout_button_click)
@@ -190,12 +197,22 @@ class MyWindow(QMainWindow):
         self.logout_button.setVisible(False)
         self.menu_button.setVisible(True)
         self.return_button.setVisible(False)
+        print('登入：',self.logout_button.isVisible())
 
         # 顯示視窗
         self.show()
 
     def testClicked(self):
         print('測試按鈕')
+
+    def show_confirmation_dialog(self):
+        # 顯示確認對話框
+        reply = QMessageBox.question(self, '程式關閉', '確定要關閉程式嗎？',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            # 如果用戶選擇 "Yes"，則關閉應用程式
+            QApplication.quit()
 
     def update_datetime(self):
         current_datetime = QDateTime.currentDateTime()
@@ -217,12 +234,29 @@ class MyWindow(QMainWindow):
         self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
 
     def logout_button_click(self):
-        self.logout_button.setVisible(not self.logout_button.isVisible()) 
-        print('logout_button_click:',self.logout_button.isVisible())
-        self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
-        self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
-        self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
-        self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
+        # 顯示確認對話框
+        reply = QMessageBox.question(self, '登出', '確定要登出嗎？',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            # 如果用戶選擇 "Yes"，則關閉應用程式
+
+            QMessageBox.information(self, '登出成功', '返回主頁面')
+            self.logout_button.setVisible(not self.logout_button.isVisible()) 
+            print('logout_button_click:',self.logout_button.isVisible())
+            self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
+            self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
+            self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
+            self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
+            # 將畫面切換回主畫面
+            self.stacked_widget.setCurrentIndex(self.plot_page_index)
+            self.current_page_index = self.plot_page_index
+
+            # 隱藏返回按鈕
+            self.return_button.setVisible(False)
+            self.menu_button.setVisible(True)
+        else:
+            return
 
 
     # 在MyWindow類別中新增一個方法用於切換畫面
@@ -260,78 +294,91 @@ class MyWindow(QMainWindow):
         # menu_page_layout.addWidget(menu_label)
 
         # 顯示四個按鈕
-        set_button = QPushButton('設定', menu_page)
-        calibrate_button = QPushButton('校正', menu_page)
-        record_button = QPushButton('記錄', menu_page)
-        identify_button = QPushButton('識別', menu_page)
+        self.set_button = QPushButton('設定', menu_page)
+        self.calibrate_button = QPushButton('校正', menu_page)
+        self.record_button = QPushButton('記錄', menu_page)
+        self.identify_button = QPushButton('識別', menu_page)
 
         # 設定按鈕大小
         button_width, button_height = 300, 300
 
-        set_button.setFixedSize(button_width, button_height)
-        calibrate_button.setFixedSize(button_width, button_height)
-        record_button.setFixedSize(button_width, button_height)
-        identify_button.setFixedSize(button_width, button_height)
+        self.set_button.setFixedSize(button_width, button_height)
+        self.calibrate_button.setFixedSize(button_width, button_height)
+        self.record_button.setFixedSize(button_width, button_height)
+        self.identify_button.setFixedSize(button_width, button_height)
 
         # 設定按鈕的背景顏色，方便檢查它們的可見性
-        set_button.setStyleSheet("background-color: pink;")
-        calibrate_button.setStyleSheet("background-color: lightgreen;")
-        record_button.setStyleSheet("background-color: lightblue;")
-        identify_button.setStyleSheet("background-color: yellow;")
+        self.set_button.setStyleSheet("background-color: pink;")
+        self.calibrate_button.setStyleSheet("background-color: lightgreen;")
+        self.record_button.setStyleSheet("background-color: lightblue;")
+        self.identify_button.setStyleSheet("background-color: yellow;")
 
-        set_button.setFont(self.font)
-        calibrate_button.setFont(self.font)
-        record_button.setFont(self.font)
-        identify_button.setFont(self.font)
+        self.set_button.setFont(self.font)
+        self.calibrate_button.setFont(self.font)
+        self.record_button.setFont(self.font)
+        self.identify_button.setFont(self.font)
 
         # 連接按鈕點擊事件
-        set_button.clicked.connect(lambda: self.show_sub_page('設定',set_button.styleSheet()))
-        calibrate_button.clicked.connect(lambda: self.show_sub_page('校正',calibrate_button.styleSheet()))
-        record_button.clicked.connect(lambda: self.show_sub_page('記錄',record_button.styleSheet()))
-        identify_button.clicked.connect(lambda: self.show_sub_page('識別',identify_button.styleSheet()))
+        self.set_button.clicked.connect(lambda: self.show_sub_page(self.set_button.text(),self.set_button.styleSheet()))
+        self.calibrate_button.clicked.connect(lambda: self.show_sub_page(self.calibrate_button.text(),self.calibrate_button.styleSheet()))
+        self.record_button.clicked.connect(lambda: self.show_sub_page(self.record_button.text(),self.record_button.styleSheet()))
+        self.identify_button.clicked.connect(lambda: self.show_sub_page(self.identify_button.text(),self.identify_button.styleSheet()))
 
         # 將按鈕添加到GridLayout中
-        menu_page_layout.addWidget(set_button, 0, 0, 1, 1)
-        menu_page_layout.addWidget(calibrate_button, 0, 1, 1, 1)
-        menu_page_layout.addWidget(record_button, 1, 0, 1, 1)
-        menu_page_layout.addWidget(identify_button, 1, 1, 1, 1)
+        menu_page_layout.addWidget(self.set_button, 0, 0, 1, 1)
+        menu_page_layout.addWidget(self.calibrate_button, 0, 1, 1, 1)
+        menu_page_layout.addWidget(self.record_button, 1, 0, 1, 1)
+        menu_page_layout.addWidget(self.identify_button, 1, 1, 1, 1)
 
+        print('登入：',self.logout_button.isVisible())
         return menu_page
-    
-     # 在 MyWindow 中新增一個方法用於返回上一個畫面
+
 
     def show_sub_page(self, page_name, _style):
-        # 隱藏選單按鈕
-        self.menu_button.setVisible(False)
+        print('登入：',self.logout_button.isVisible())
 
-        # 判斷是否已經創建了該子畫面
-        if page_name not in self.sub_pages or not self.stacked_widget.widget(self.sub_pages[page_name]):
-            # 如果還沒有，則創建一個新的子畫面
-            sub_page = menuSubFrame(page_name, _style, self.sub_pages, self.stacked_widget, self)
-
-            # 添加到堆疊中
-            sub_page_index = self.stacked_widget.addWidget(sub_page)
-            self.sub_pages[page_name] = sub_page_index
+        if self.logout_button.isVisible()==False and page_name!='識別':
+            print(self.logout_button.isVisible(),page_name!='識別')
+            self.is_login_dialog(page_name)
         else:
-            # 如果已經存在，取得子畫面的索引
-            sub_page_index = self.sub_pages[page_name]
+            # 隱藏選單按鈕
+            self.menu_button.setVisible(False)
 
-            # 強制刷新子畫面
-            sub_page = self.stacked_widget.widget(sub_page_index)
-            # sub_page.update()  # 假設您的子畫面有 update 方法
+            # 判斷是否已經創建了該子畫面
+            if page_name not in self.sub_pages or not self.stacked_widget.widget(self.sub_pages[page_name]):
+                # 如果還沒有，則創建一個新的子畫面
+                sub_page = menuSubFrame(page_name, _style, self.sub_pages, self.stacked_widget, self)
 
-        # # 設定當前顯示的子畫面索引
-        self.stacked_widget.setCurrentIndex(sub_page_index)
-        self.current_page_index = sub_page_index
-        print('Current Page Index:', self.current_page_index)
+                # 添加到堆疊中
+                sub_page_index = self.stacked_widget.addWidget(sub_page)
+                self.sub_pages[page_name] = sub_page_index
+            else:
+                # 如果已經存在，取得子畫面的索引
+                sub_page_index = self.sub_pages[page_name]
 
-        # 觸發標題的 print
-        print('進入：', page_name)
+                # 強制刷新子畫面
+                sub_page = self.stacked_widget.widget(sub_page_index)
+                # sub_page.update()  # 假設您的子畫面有 update 方法
 
-        # 顯示返回按鈕
-        self.return_button.setVisible(True)
+            # # 設定當前顯示的子畫面索引
+            self.stacked_widget.setCurrentIndex(sub_page_index)
+            self.current_page_index = sub_page_index
+            print('Current Page Index:', self.current_page_index)
+
+            # 觸發標題的 print
+            print('進入：', page_name)
+
+            # 顯示返回按鈕
+            self.return_button.setVisible(True)
+
+    def is_login_dialog(self,title):
+        # 顯示確認對話框
+        message_text="你要先從識別的登入才有權限使用{}功能".format(title)
+        QMessageBox.critical(self, '請先登入', message_text)
+        print(title,'不可用')
 
 
+    # 在 MyWindow 中新增一個方法用於返回上一個畫面
     def switch_to_previous_page(self):
         if self.stacked_widget is not None:
         

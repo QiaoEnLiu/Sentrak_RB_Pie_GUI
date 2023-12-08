@@ -1,6 +1,6 @@
 pyinstaller --onefile --add-data "picture/;picture" --hidden-import=psutil Sentrak_GUI-RBPie.py
 
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picuture"
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picuture"
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picture"
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picture"
 
 

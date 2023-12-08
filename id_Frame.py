@@ -8,7 +8,7 @@
 
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QPushButton, QMessageBox
 from PyQt5.QtGui import QFont
 # from Sentrak_RaspberryPie_GUI import MyWindow
 
@@ -154,10 +154,12 @@ class id_LogIn_Frame(QWidget):
         if username != 'abc':
             self.username_denial_label.setVisible(True)
             print('帳號錯誤！')
+            QMessageBox.critical(self, '登入失敗', '帳號錯誤！')
         else:
             self.username_denial_label.setVisible(False)
             if password != 'abc':
                 self.password_denial_label.setVisible(True)
+                QMessageBox.critical(self, '登入失敗', '密碼錯誤！')
                 print('密碼錯誤！')
             elif password == 'abc':
 
@@ -169,9 +171,12 @@ class id_LogIn_Frame(QWidget):
                 self.login_button.setVisible(False)
                 self.login_label.setText(username + self.login_label.text())
                 self.password_denial_label.setVisible(False)
-                print('正確！')
-                # 信號和槽的連接信息
+                QMessageBox.information(self, '登入成功', self.login_label.text())
 
+                print('正確！')
+
+
+                # 信號和槽的連接信息
                 loginSuccessful = True
                 self.login_successful_callback(loginSuccessful)
                 self.login_button.setVisible(not self.main_window.logout_button.isVisible())

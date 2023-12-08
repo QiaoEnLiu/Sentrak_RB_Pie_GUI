@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['Sentrak_RaspberryPie_GUI.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('picture', 'picuture')],
+    datas=[('picture', 'picture')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
