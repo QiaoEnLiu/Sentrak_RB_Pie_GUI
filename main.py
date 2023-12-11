@@ -12,7 +12,7 @@ try:
     from PyQt5.QtWidgets import \
         QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
         QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
-        QPushButton, QStackedWidget, QMessageBox
+        QPushButton, QStackedWidget, QMessageBox, QDesktopWidget
     from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
     from PyQt5.QtGui import QFont, QPixmap, QImage
 
@@ -35,7 +35,27 @@ class MyWindow(QMainWindow):
         self.plot_canvas = plotCanvas(self, width=5, height=4)
 
         # 設置主視窗的尺寸
-        self.setFixedSize(1920, 1080)
+        # 取得螢幕解析度
+        screen_resolution = QDesktopWidget().screenGeometry()
+        screen_width, screen_height = screen_resolution.width(), screen_resolution.height()
+
+        # 如果解析度為1920*1080，則全螢幕，否則使用固定解析度
+        if screen_width == 1920 and screen_height == 1080:
+            self.showFullScreen()
+        else:
+            self.setFixedSize(1920, 1080)
+            print()
+
+        window_size = self.size()
+        winWidth = window_size.width()
+        winHeight = window_size.height()
+
+        print('視窗大小：', winWidth, '*', winHeight)
+        print('螢幕解析：', screen_width, '*', screen_height)
+
+
+
+
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
