@@ -6,7 +6,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[('picture', 'picture')],
-    hiddenimports=[],
+    hiddenimports=['minimalmodbus'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -25,7 +25,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=True, #預設 True，關掉為False
     upx_exclude=[],
     runtime_tmpdir=None,
     console=True,
@@ -34,4 +34,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
+) 

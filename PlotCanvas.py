@@ -2,10 +2,14 @@
 # PlotCanvas.py
 #初始子畫面折線圖
 
-
-import numpy
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+try:
+    import numpy, traceback
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+    input("Press Enter to exit")
 
 # matplotlib.use('Qt5Agg')
 

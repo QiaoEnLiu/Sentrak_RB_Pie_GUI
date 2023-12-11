@@ -6,11 +6,15 @@
 #--「登入身份」為id_LogIn_Fram
 #--「感測器資訊」暫時進入testEndFrame.py
 
-
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QPushButton, QMessageBox
-from PyQt5.QtGui import QFont
-# from Sentrak_RaspberryPie_GUI import MyWindow
+try:
+    import traceback
+    from PyQt5.QtCore import Qt, pyqtSignal
+    from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QPushButton, QMessageBox
+    from PyQt5.QtGui import QFont
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+    input("Press Enter to exit")
 
 
 class id_LogIn_Frame(QWidget):

@@ -4,10 +4,15 @@
 #此程式碼為子畫面最終刷新測試碼
 #--第一子畫面最終測試碼執行結果 Sentrak_RaspberryPie_GUI.py -> menuSubFrame.py
 #--最新最子畫面最終測試碼執行結果 menuSubFrame.py -> testEndFrame.py
-
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt5.QtGui import QFont
+try:
+    import traceback
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
+    from PyQt5.QtGui import QFont
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+    input("Press Enter to exit")
 
 
 class testEndFrame(QWidget):

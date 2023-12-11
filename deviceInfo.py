@@ -5,13 +5,20 @@
 #--「儀器資訊」為deviceInfoFrame
 #--「感測器資訊」暫時進入testEndFrame.py
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QScrollArea
-from PyQt5.QtGui import QFont
+try:
+    
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QScrollArea
+    from PyQt5.QtGui import QFont
 
-import platform, os, subprocess, re
-import psutil
-# import RPi.GPIO as GPIO
+    import platform, os, subprocess, re, traceback
+    import psutil
+    # import RPi.GPIO as GPIO
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+    input("Press Enter to exit")
 
 
 class deviceInfoFrame(QWidget):

@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['Sentrak_RaspberryPie_GUI.py'],
-    pathex=[],
+    ['main.py'],
+    pathex=['venv-py3_10/Scripts'],
     binaries=[],
     datas=[('picture', 'picuture')],
-    hiddenimports=[],
+    hiddenimports=['minimalmodbus'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

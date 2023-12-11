@@ -3,17 +3,30 @@
 # Sentrak_RaspberryPie_GUI.py
 # 此程式碼為主畫面，顯示折線圖為主
 
-import os, sys
-from PyQt5.QtWidgets import \
-    QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
-      QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
-      QPushButton, QStackedWidget, QMessageBox
-from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
-from PyQt5.QtGui import QFont, QPixmap, QImage
+try:
+    import sys
+    # sys.path.append("venv-py3_9/Lib/site-packages")
 
-from plotCanvas import plotCanvas
-from menuSubFrame import menuSubFrame
-from img_to_base64 import image_to_base64
+    import os, traceback, minimalmodbus
+
+    from PyQt5.QtWidgets import \
+        QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
+        QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
+        QPushButton, QStackedWidget, QMessageBox
+    from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
+    from PyQt5.QtGui import QFont, QPixmap, QImage
+
+    from plotCanvas import plotCanvas
+    from menuSubFrame import menuSubFrame
+    from img_to_base64 import image_to_base64
+    from testRTU import testRTU_Frame
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+    input("Press Enter to exit")
+
+
 
 
 class MyWindow(QMainWindow):
@@ -86,6 +99,7 @@ class MyWindow(QMainWindow):
         # 在功能列中添加按鈕
         save_button = QPushButton('資料儲存', function_bar)
         # test_button = QPushButton('測試', function_bar)
+        self.test_RTU_button = QPushButton('測試RTU', function_bar)
         self.quit_button=QPushButton('離開',function_bar)
         self.lock_label = QLabel('螢幕鎖',function_bar)
         self.logout_button = QPushButton('登出', function_bar)
@@ -96,6 +110,7 @@ class MyWindow(QMainWindow):
         self.stacked_widget = QStackedWidget(self.sub_frame)
         self.plot_page_index = self.stacked_widget.addWidget(self.plot_canvas) # 此處僅添加 plot 畫面
         self.menu_page_index = self.stacked_widget.addWidget(self.create_menu_page()) #此處添加了 menu 畫面
+        self.tsRTU_page_index = None
         self.stacked_widget.setCurrentIndex(self.plot_page_index) #設定初始顯示的畫面
         self.current_page_index = self.plot_page_index # 將當前的畫面索引設為 plot_page_index
 
@@ -132,6 +147,7 @@ class MyWindow(QMainWindow):
 
         save_button.setFixedSize(button_width, button_height)
         # test_button.setFixedSize(button_width, button_height)
+        self.test_RTU_button.setFixedSize(button_width, button_height)
         self.quit_button.setFixedSize(button_width,button_height)
         # self.lock_label.setFixedSize(button_width, button_height)
         self.logout_button.setFixedSize(button_width, button_height)
@@ -141,6 +157,7 @@ class MyWindow(QMainWindow):
         self.font.setPointSize(36)
         save_button.setFont(self.font)
         # test_button.setFont(self.font)
+        self.test_RTU_button.setFont(self.font)
         self.quit_button.setFont(self.font)
         self.lock_label.setFont(self.font)
         self.logout_button.setFont(self.font)
@@ -173,6 +190,7 @@ class MyWindow(QMainWindow):
 
         function_bar_layout1.addWidget(save_button)
         # function_bar_layout1.addWidget(test_button)
+        function_bar_layout1.addWidget(self.test_RTU_button)
         function_bar_layout1.addWidget(self.quit_button)
         function_bar_layout1.addItem(spacer)
 
@@ -190,6 +208,7 @@ class MyWindow(QMainWindow):
         function_bar_layout.addLayout(function_bar_layout3, 1)
 
         self.quit_button.clicked.connect(self.show_confirmation_dialog)
+        self.test_RTU_button.clicked.connect(self.switch_to_TestRTU)
         self.menu_button.clicked.connect(self.switch_to_menu)
         self.return_button.clicked.connect(self.switch_to_previous_page)
         self.logout_button.clicked.connect(self.logout_button_click)
@@ -257,6 +276,29 @@ class MyWindow(QMainWindow):
             self.menu_button.setVisible(True)
         else:
             return
+        
+    # 取得模擬RTU數據測試畫面
+    def switch_to_TestRTU(self):
+        print(self.test_RTU_button.text())
+        if self.tsRTU_page_index is None:
+            tsRTU_page = testRTU_Frame(self.test_RTU_button.text(),"background-color: orange;")
+            self.tsRTU_page_index = self.stacked_widget.addWidget(tsRTU_page)
+
+        if self.current_page_index != self.tsRTU_page_index:
+            self.stacked_widget.setCurrentIndex(self.tsRTU_page_index)
+            self.current_page_index = self.tsRTU_page_index
+
+        else:
+            # 如果當前已經是主選單索引，再次切換到主選單
+            self.stacked_widget.setCurrentIndex(self.tsRTU_page_index)
+
+        # 根據當前的畫面索引顯示或隱藏按鈕
+        self.menu_button.setVisible(self.current_page_index == self.plot_page_index)
+        self.test_RTU_button.setVisible(self.current_page_index == self.plot_page_index)
+        self.return_button.setVisible(self.current_page_index == self.tsRTU_page_index)
+
+        print('Current Page Index:', self.current_page_index)
+
 
 
     # 在MyWindow類別中新增一個方法用於切換畫面
@@ -276,9 +318,12 @@ class MyWindow(QMainWindow):
 
         # 根據當前的畫面索引顯示或隱藏按鈕
         self.menu_button.setVisible(self.current_page_index == self.plot_page_index)
+        self.test_RTU_button.setVisible(self.current_page_index == self.plot_page_index)
         self.return_button.setVisible(self.current_page_index == self.menu_page_index)
 
         print('Current Page Index:', self.current_page_index)
+
+    
 
     # 在MyWindow中新增一個方法用於創建選單畫面
     def create_menu_page(self):        
@@ -386,6 +431,12 @@ class MyWindow(QMainWindow):
             if self.current_page_index == self.menu_page_index:
                 self.stacked_widget.setCurrentIndex(self.plot_page_index)
                 self.current_page_index = self.plot_page_index
+
+            # RTU測試畫面返回主畫面
+            elif self.current_page_index == self.tsRTU_page_index:
+                self.stacked_widget.setCurrentIndex(self.plot_page_index)
+                self.current_page_index = self.plot_page_index
+                
             else:
                 # 清除之前的子畫面
                 previous_sub_frame = self.stacked_widget.currentWidget()
@@ -408,6 +459,7 @@ class MyWindow(QMainWindow):
 
             # 根據當前的畫面索引顯示或隱藏按鈕
             self.menu_button.setVisible(self.current_page_index == self.plot_page_index)
+            self.test_RTU_button.setVisible(self.current_page_index == self.plot_page_index)
             self.return_button.setVisible(self.current_page_index != self.plot_page_index)
 
         print('Current Page Index:', self.current_page_index) 
@@ -416,13 +468,20 @@ class MyWindow(QMainWindow):
 if __name__ == '__main__':
 
     print("Current working directory:", os.getcwd())
-    app = QApplication(sys.argv)
-    # window = MyWindow()
-    # sys.exit(app.exec_())
+
     try:
+        app = QApplication(sys.argv)
         window = MyWindow()
         sys.exit(app.exec_())
     except Exception as e:
         print(f"An error occurred: {e}")
-        input("Press Enter to exit")  # 等待使用者按 Enter 鍵
+        traceback.print_exc()
+        input("Press Enter to exit")
+        # 等待使用者按 Enter 鍵
+
+
+    # app = QApplication(sys.argv)
+    # window = MyWindow()
+    # sys.exit(app.exec_())
+
         

@@ -1,6 +1,17 @@
-pyinstaller --onefile --add-data "picture/;picture" --hidden-import=psutil Sentrak_GUI-RBPie.py
+Powershell:
 
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picture"
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\Sentrak_RaspberryPie_GUI.py --add-data "picture;picture"
+pyinstaller --onefile --add-data "picture/;picture" --hidden-import=psutil main.py
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\main.py --add-data "picture;picture" --hidden-import=minimalmodbus
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\main.py --add-data "picture;picture" --hidden-import=minimalmodbus
+
+.\venv-py3_10\Scripts\activate
+deactivate
+
+Linux:
+
+xrandr
+xrandr --output HDMI-1 --mode 1920x1080
 
 
+cd /media/joejoe/ESD-USB/
+sudo umount /media/joejoe/ESD-USB
