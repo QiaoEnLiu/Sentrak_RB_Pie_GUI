@@ -1,0 +1,6 @@
+use Ports class, O
+emulate baud rate, O
+enable buffer overrun, O
+enable plug-in mode, X
+enable exclusive mode, X
+enable hiddenmode, X
