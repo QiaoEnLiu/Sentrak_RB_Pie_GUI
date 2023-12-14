@@ -9,34 +9,6 @@ deactivate
 
 
 
-##########################
-# 檢查防火牆是否啟用
-$firewallStatus = Get-Service -Name 'MpsSvc' | Select-Object -ExpandProperty Status
-
-if ($firewallStatus -eq 'Running') {
-    Write-Host "Windows Firewall is running."
-    
-    # 檢查 COM 埠是否被防火牆擋掉，替換 1234 為你的 COM 埠數字
-    $portNumber = 1234
-    $portBlocked = Test-NetConnection -ComputerName 'localhost' -Port $portNumber -InformationLevel 'Detailed' | Select-Object -ExpandProperty TcpTestSucceeded
-
-    if ($portBlocked) {
-        Write-Host "COM port is accessible."
-    } else {
-        Write-Host "COM port is blocked by the firewall."
-    }
-} else {
-    Write-Host "Windows Firewall is not running."
-}
-
-##########################
-
-
-
-
-
-
-
 Linux:
 
 xrandr
