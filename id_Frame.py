@@ -155,17 +155,21 @@ class id_LogIn_Frame(QWidget):
         # 處理登入按鈕點擊事件的邏輯
         username = self.username_input.text()
         password = self.password_input.text()
-        if username != 'abc':
+
+        user_P001 = 'Priorty001' #最高權限使用者測試
+        pw_P001 = 'Ayt001'
+
+        if username != user_P001:
             self.username_denial_label.setVisible(True)
             print('帳號錯誤！')
             QMessageBox.critical(self, '登入失敗', '帳號錯誤！')
         else:
             self.username_denial_label.setVisible(False)
-            if password != 'abc':
+            if password != pw_P001:
                 self.password_denial_label.setVisible(True)
                 QMessageBox.critical(self, '登入失敗', '密碼錯誤！')
                 print('密碼錯誤！')
-            elif password == 'abc':
+            elif password == pw_P001:
 
                 self.username_label.setVisible(False)
                 self.username_input.setVisible(False)

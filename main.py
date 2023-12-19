@@ -6,6 +6,7 @@
 try:
     import sys
     # sys.path.append("venv-py3_9/Lib/site-packages")
+    print(sys.path)
 
     import os, traceback, minimalmodbus
 
