@@ -2,6 +2,8 @@
 
 # id_Frame.py
 
+#此介面已取消
+
 #此程式碼為「識別」底下「登入身份」程式碼
 #--「登入身份」為id_LogIn_Fram
 #--「感測器資訊」暫時進入testEndFrame.py
@@ -20,7 +22,7 @@ except Exception as e:
 class id_LogIn_Frame(QWidget):
     login_successful = pyqtSignal(bool)
 
-    def __init__(self, title, _style, main_window):
+    def __init__(self, title, _style): # ,main_window
         super().__init__()
         print('進入畫面：', title)
 
@@ -107,7 +109,6 @@ class id_LogIn_Frame(QWidget):
         login_bt_layout.addWidget(self.login_button)
 
         # 垂直佈局，包含所有元素
-        #zh-tw 以下程式碼顯示方式為title_layout高度符合他內部元件的高度，login_bt_layout高度符合他內部元件的高度並壓在最底下，而username_layout及password_layout將剩餘的高度平均分配。
         id_LogIn_frame_layout = QVBoxLayout(self)
         # id_LogIn_frame_layout.setContentsMargins(0, 0, 0, 0)
         id_LogIn_frame_layout.setSpacing(0)
@@ -119,30 +120,30 @@ class id_LogIn_Frame(QWidget):
         id_LogIn_frame_layout.addStretch(1)
         id_LogIn_frame_layout.addLayout(login_bt_layout)
 
-        self.login_successful.connect(self.login_successful_callback)
-        self.main_window = main_window  # 添加這行，將 main_window 設定為實例變數
+        # self.login_successful.connect(self.login_successful_callback)
+        # self.main_window = main_window  # 添加這行，將 main_window 設定為實例變數
 
-        self.login_button.setVisible(not self.main_window.logout_button.isVisible())
-        self.username_denial_label.setVisible(False)
-        self.password_denial_label.setVisible(False)
-        self.login_label.setVisible(False)
+        # self.login_button.setVisible(not self.main_window.logout_button.isVisible())
+        # self.username_denial_label.setVisible(False)
+        # self.password_denial_label.setVisible(False)
+        # self.login_label.setVisible(False)
 
-        self.main_window.logout_button.clicked.connect(self.logout_button_click)
+        # self.main_window.logout_button.clicked.connect(self.logout_button_click)
 
-        if self.main_window.logout_button.isVisible():
-            self.username_label.setVisible(False)
-            self.username_input.setVisible(False)
-            self.password_label.setVisible(False)
-            self.password_input.setVisible(False)
-            self.login_label.setVisible(True)
-            self.login_button.setVisible(False)
-        else:
-            self.username_label.setVisible(True)
-            self.username_input.setVisible(True)
-            self.password_label.setVisible(True)
-            self.password_input.setVisible(True)
-            self.login_label.setVisible(False)
-            self.login_button.setVisible(True)
+        # if self.main_window.logout_button.isVisible():
+        #     self.username_label.setVisible(False)
+        #     self.username_input.setVisible(False)
+        #     self.password_label.setVisible(False)
+        #     self.password_input.setVisible(False)
+        #     self.login_label.setVisible(True)
+        #     self.login_button.setVisible(False)
+        # else:
+        #     self.username_label.setVisible(True)
+        #     self.username_input.setVisible(True)
+        #     self.password_label.setVisible(True)
+        #     self.password_input.setVisible(True)
+        #     self.login_label.setVisible(False)
+        #     self.login_button.setVisible(True)
 
             
         # print("Connected handle_login_success to login_successful signal.")
@@ -156,8 +157,8 @@ class id_LogIn_Frame(QWidget):
         username = self.username_input.text()
         password = self.password_input.text()
 
-        user_P001 = 'Priorty001' #最高權限使用者測試
-        pw_P001 = 'Ayt001'
+        user_P001 = 'Ayt001' #最高權限使用者測試
+        pw_P001 = 'Priorty001'
 
         if username != user_P001:
             self.username_denial_label.setVisible(True)

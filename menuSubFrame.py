@@ -201,7 +201,8 @@ class menuSubFrame(QWidget):
             if item_text == '登入身份':
 
                 # 進入「登入身份」介面
-                next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.main_window)
+                # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet())
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet())
 
             elif item_text == '儀器資訊': 
                 # 進入「儀器資訊」介面，暫以本機開發硬體測試
