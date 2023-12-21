@@ -16,7 +16,7 @@ except Exception as e:
 
 
 class testEndFrame(QWidget):
-    def __init__(self, title, _style):
+    def __init__(self, title, _style, user):
         super().__init__()
         print(title)
 
@@ -28,8 +28,16 @@ class testEndFrame(QWidget):
         end_label.setFont(font)
         end_label.setStyleSheet(_style)
 
+        user_label = QLabel(user.userInfo())
+        user_label.setFont(font)
+        user_label.setStyleSheet(_style)
+
         end_sub_frame_layout = QVBoxLayout(self)
         end_sub_frame_layout.setContentsMargins(0, 0, 0, 0)
         end_sub_frame_layout.setSpacing(0) 
         end_sub_frame_layout.addWidget(end_label)
+        end_sub_frame_layout.addWidget(user_label)
+
         print('終節點測試畫面：', title)
+        # self.user= MyWindow.get_global_presentUser()
+        # print('End Frame:',self.user)

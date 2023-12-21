@@ -1,6 +1,6 @@
-#zh-tw
+#zh-tw 我重新複製上來
 
-# Sentrak_RaspberryPie_GUI.py
+# main.py
 # 此程式碼為主畫面，顯示折線圖為主
 
 try:
@@ -13,8 +13,7 @@ try:
     from PyQt5.QtWidgets import \
         QApplication, QMainWindow, QWidget, QStatusBar, QVBoxLayout,\
         QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QFrame, QGridLayout,\
-        QPushButton, QStackedWidget, QMessageBox, QDesktopWidget, QInputDialog,\
-        QLineEdit
+        QPushButton, QStackedWidget, QMessageBox, QDesktopWidget
     from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
     from PyQt5.QtGui import QFont, QPixmap, QImage
 
@@ -30,12 +29,13 @@ except Exception as e:
     input("Press Enter to exit")
 
 
+global_presentUser = None
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.isLogin=False
-
 
         self.plot_canvas = plotCanvas(self, width=5, height=4)
 
@@ -125,7 +125,7 @@ class MyWindow(QMainWindow):
         self.test_RTU_button = QPushButton('測試RTU', function_bar)
         self.quit_button=QPushButton('離開',function_bar)
         # self.lock_label = QLabel('螢幕鎖',function_bar)
-        self.lock_button=QPushButton('上鎖',function_bar)
+        self.lock_button=QPushButton('解鎖',function_bar)
         self.logout_button = QPushButton('登出', function_bar)
         self.menu_button = QPushButton('選單', function_bar)
         self.return_button = QPushButton('返回', function_bar)
@@ -222,10 +222,10 @@ class MyWindow(QMainWindow):
         function_bar_layout2.addItem(spacer_right)
         # function_bar_layout2.addWidget(self.lock_label)
         function_bar_layout2.addWidget(self.lock_button)
+        function_bar_layout2.addWidget(self.logout_button)
         function_bar_layout2.addItem(spacer_left)
         
         function_bar_layout3.addItem(spacer)
-        function_bar_layout3.addWidget(self.logout_button)
         function_bar_layout3.addWidget(self.menu_button)
         function_bar_layout3.addWidget(self.return_button)
 
@@ -240,6 +240,7 @@ class MyWindow(QMainWindow):
         self.return_button.clicked.connect(self.switch_to_previous_page)
         self.logout_button.clicked.connect(self.logout_button_click)
 
+        self.lock_button.setVisible(not self.isLogin)
         self.logout_button.setVisible(self.isLogin)
         self.menu_button.setVisible(True)
         self.return_button.setVisible(False)
@@ -272,26 +273,34 @@ class MyWindow(QMainWindow):
     def showLoginDialog(self):
 
         # 顯示帳號和密碼輸入對話框
-        double_input_dialog = LoginDialog()
-        result = double_input_dialog.exec_()
+        login_dialog = LoginDialog()
+        result = login_dialog.exec_()
 
         if result == LoginDialog.Accepted: # 使用者按下確定按鈕，取得輸入的值
+            global global_presentUser
             self.isLogin=True
-            # username = double_input_dialog.username_input.text()
-            # password = double_input_dialog.password_input.text()
+            # username = login_dialog.username_input.text()
+            # password = login_dialog.password_input.text()
             self.logout_button.setVisible(self.isLogin)
-            print('logout_button:',self.logout_button.isVisible())
-            print('登入成功')
+            self.lock_button.setVisible(not self.isLogin)
+            # print('logout_button:',self.logout_button.isVisible())
+            print('登入成功', login_dialog.get_global_loginUser())
+            global_presentUser = login_dialog.get_global_loginUser()
+
+            print('main.py:',global_presentUser.userInfo())
 
         else:
             print('登入取消')
+
+    def get_global_presentUser(self):
+        return global_presentUser
 
 
     def handle_login_success(self, checkLogin):
         # 登入成功時觸發，將 logout_button 由不可見改為可見
         print('收到 login_successful 信號:', checkLogin)
         self.logout_button.setVisible(True)
-        print('logout_button:',self.logout_button.isVisible())
+        # print('logout_button:',self.logout_button.isVisible())
         self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "unlock_icon.png")
         self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
         self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
@@ -304,19 +313,22 @@ class MyWindow(QMainWindow):
 
         if reply == QMessageBox.Yes:
             # 如果用戶選擇 "Yes"，則關閉應用程式
+            global_presentUser=None
             self.isLogin=False
             QMessageBox.information(self, '登出成功', '返回主頁面')
             self.logout_button.setVisible(self.isLogin) 
             print('logout_button_click:',self.logout_button.isVisible())
+
             self.lock_icon_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath(".")), "picture", "lock_icon.png")
             self.lock_icon_base64 = image_to_base64(self.lock_icon_path) # 使用 lock_icon_base64
             self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
             # self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
+
             # 將畫面切換回主畫面
             self.stacked_widget.setCurrentIndex(self.plot_page_index)
             self.current_page_index = self.plot_page_index
 
-            # 隱藏返回按鈕
+            self.lock_button.setVisible(not self.isLogin)
             self.return_button.setVisible(False)
             self.menu_button.setVisible(True)
         else:

@@ -22,7 +22,7 @@ except Exception as e:
 
 
 class deviceInfoFrame(QWidget):
-    def __init__(self, title, _style):
+    def __init__(self, title, _style, user):
         super().__init__()
         # print(title)
         print('測試畫面：', title)
@@ -96,6 +96,9 @@ class deviceInfoFrame(QWidget):
         print(gpio_info) 
 
         self.deviceInfo_label.setText(cpu_info + gpu_info + memory_info + disk_info + network_info + gpio_info)
+
+        
+        print(title ,user.userInfo())
 
 
 

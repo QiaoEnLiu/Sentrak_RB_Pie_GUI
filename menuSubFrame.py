@@ -36,6 +36,8 @@ class menuSubFrame(QWidget):
 
         self.title = title
         print(self.title)
+        self.user=main_window.get_global_presentUser()
+        print('Menu Sub:',self.user.userInfo())
 
         self.font = QFont()
 
@@ -117,7 +119,7 @@ class menuSubFrame(QWidget):
         item_label.setFont(self.font)
         item_label.setStyleSheet("border: 5px solid black;border-bottom: 0px;")
         item_label.setContentsMargins(0, 0, 0, 0)
-        print('item_label:', item_label.font().pointSize())
+        # print('item_label:', item_label.font().pointSize())
 
         self.describe_label.setText('描述')
         self.font.setPointSize(pixmap.scaledToHeight(144).height()*15//80)
@@ -125,7 +127,7 @@ class menuSubFrame(QWidget):
         self.describe_label.setFont(self.font)
         self.describe_label.setStyleSheet("border: 5px solid black;border-top: 0px; color: gray")
         self.describe_label.setContentsMargins(0, 0, 0, 0)
-        print('self.describe_label:', self.describe_label.font().pointSize())
+        # print('self.describe_label:', self.describe_label.font().pointSize())
 
         # 將圖示和文字排列在一行
         item_layout = QHBoxLayout()
@@ -185,6 +187,34 @@ class menuSubFrame(QWidget):
             self.describe_label.setText('濃度、溫度、類型')
         elif item_title == '感測器溫度保護':
             self.describe_label.setText('狀態、溫度設定')
+        elif item_title == '診斷':
+            self.describe_label.setText('觀看詳細數值')
+        elif item_title == '通訊':
+            self.describe_label.setText('RS-485、HTTP/TCPIP')
+        elif item_title == '時間':
+            self.describe_label.setText('調整時間、日期格式')
+        elif item_title == '語言':
+            self.describe_label.setText('多國語言')
+        elif item_title =='感測器校正':
+            self.describe_label.setText('空氣校正、直接校正')
+        elif item_title =='大氣壓力校正':
+            self.describe_label.setText('大氣壓力校正')
+        elif item_title == '類比輸出校正':
+            self.describe_label.setText('0 - 20 mA、4 - 20 mA')
+        elif item_title == '觀看記錄':
+            self.describe_label.setText('時間、數值')
+        elif item_title == '統計表':
+            self.describe_label.setText('最高值、值均值、最底值')
+        elif item_title == '下載記錄至隨身碟':
+            self.describe_label.setText('儲存格式：Excel、txt、json、csv')
+        elif item_title == '記錄方式設定':
+            self.describe_label.setText('自動、手動')
+        elif item_title == '登入身份':
+            self.describe_label.setText('輸入密碼')
+        elif item_title == '儀器資訊':
+            self.describe_label.setText('型號、序號、生產日期……')
+        elif item_title == '感測器資訊':
+            self.describe_label.setText('型號、序號、生產日期……')
         else :
             self.describe_label.setText('描述')
 
@@ -200,17 +230,18 @@ class menuSubFrame(QWidget):
             print('進入選項：', item_text)
             if item_text == '登入身份':
 
-                # 進入「登入身份」介面
-                # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet())
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet())
+                # 進入「登入身份」介面，此功能須再與解鎖功能區分
+
+                # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.user)
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user)
 
             elif item_text == '儀器資訊': 
                 # 進入「儀器資訊」介面，暫以本機開發硬體測試
-                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet())
+                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user)
             
             else:
                 # 如果還沒有，則創建一個新的 testEndFrame 為終節點畫面測試
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet())
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user)
                 
             # 添加到堆疊中
             next_frame_index = self.stacked_widget.addWidget(next_frame)
