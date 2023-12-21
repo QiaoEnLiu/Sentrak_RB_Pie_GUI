@@ -37,7 +37,7 @@ class menuSubFrame(QWidget):
         self.title = title
         print(self.title)
         self.user=main_window.get_global_presentUser()
-        print('Menu Sub:',self.user.userInfo())
+        print(title,self.user.userInfo())
 
         self.font = QFont()
 
@@ -174,6 +174,7 @@ class menuSubFrame(QWidget):
 
         # 設置點擊事件處理函數，連接點擊信號
         self.list_widget.itemClicked.connect(lambda item: self.handle_record_item_click(item))
+        
 
 
 
@@ -233,15 +234,15 @@ class menuSubFrame(QWidget):
                 # 進入「登入身份」介面，此功能須再與解鎖功能區分
 
                 # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.user)
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user)
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
 
             elif item_text == '儀器資訊': 
                 # 進入「儀器資訊」介面，暫以本機開發硬體測試
-                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user)
+                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
             
             else:
                 # 如果還沒有，則創建一個新的 testEndFrame 為終節點畫面測試
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user)
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
                 
             # 添加到堆疊中
             next_frame_index = self.stacked_widget.addWidget(next_frame)
@@ -254,4 +255,4 @@ class menuSubFrame(QWidget):
         self.stacked_widget.setCurrentIndex(next_frame_index)
         self.current_page_index = next_frame_index
 
-        print('Current Page Index:', self.current_page_index)
+        # print('Current Page Index:', self.current_page_index)

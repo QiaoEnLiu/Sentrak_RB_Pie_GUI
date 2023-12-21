@@ -16,7 +16,7 @@ except Exception as e:
 
 
 class testEndFrame(QWidget):
-    def __init__(self, title, _style, user):
+    def __init__(self, title, _style, user, stacked_widget):
         super().__init__()
         print(title)
 
@@ -39,5 +39,9 @@ class testEndFrame(QWidget):
         end_sub_frame_layout.addWidget(user_label)
 
         print('終節點測試畫面：', title)
-        # self.user= MyWindow.get_global_presentUser()
-        # print('End Frame:',self.user)
+
+        self.stacked_widget = stacked_widget
+        end_frame_index = self.stacked_widget.addWidget(self)
+        self.current_page_index = end_frame_index # 將當前的畫面索引設為 plot_page_index
+        # 設定當前顯示的子畫面索引
+        print('Current Page Index:', self.current_page_index)

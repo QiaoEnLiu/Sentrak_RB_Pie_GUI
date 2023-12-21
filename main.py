@@ -436,7 +436,7 @@ class MyWindow(QMainWindow):
         menu_page_layout.addWidget(self.record_button, 1, 0, 1, 1)
         menu_page_layout.addWidget(self.identify_button, 1, 1, 1, 1)
 
-        print('登入：',self.logout_button.isVisible())
+        # print('登入：',self.logout_button.isVisible())
         return menu_page
 
 

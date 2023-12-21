@@ -22,7 +22,7 @@ except Exception as e:
 
 
 class deviceInfoFrame(QWidget):
-    def __init__(self, title, _style, user):
+    def __init__(self, title, _style, user, stacked_widget):
         super().__init__()
         # print(title)
         print('測試畫面：', title)
@@ -71,35 +71,41 @@ class deviceInfoFrame(QWidget):
 
 
         cpu_info = 'CPU 資訊:' + self.get_cpu_info() + '\n'
-        print(cpu_info)
+        # print(cpu_info)
 
         gpu_info = 'GPU 資訊:' + self.get_gpu_info() + '\n'
-        print(gpu_info)
+        # print(gpu_info)
 
         # memory_info ='記憶體資訊:' + '暫未提供' + '\n'
         memory_info ='記憶體資訊:' + self.get_memory_info() + '\n'
-        print(memory_info)
+        # print(memory_info)
 
         disk_info = '硬碟資訊:' + '暫未提供' + '\n'
         # for info in self.get_disk_info(): 
             # disk_info += info + '\n'
-        print(disk_info)
+        # print(disk_info)
 
         # network_info = '網路介面資訊:' + '暫未提供' + '\n'
         network_info = '網路介面資訊:' + '\n'
         for line in self.get_network_info():
             network_info += line + '\n'
-        print(network_info)
+        # print(network_info)
 
         gpio_info = 'GPIO 資訊:' + '暫未提供' + '\n'
         # gpio_info = 'GPIO 資訊:' + self.get_gpio_info()
-        print(gpio_info) 
+        # print(gpio_info) 
 
         self.deviceInfo_label.setText(cpu_info + gpu_info + memory_info + disk_info + network_info + gpio_info)
 
         
-        print(title ,user.userInfo())
+        # print(title ,user.userInfo())
 
+
+        self.stacked_widget = stacked_widget
+        deviceInfo_index = self.stacked_widget.addWidget(self)
+        self.current_page_index = deviceInfo_index # 將當前的畫面索引設為 plot_page_index
+        # 設定當前顯示的子畫面索引
+        print('Current Page Index:', self.current_page_index)
 
 
     def get_cpu_info(self):
