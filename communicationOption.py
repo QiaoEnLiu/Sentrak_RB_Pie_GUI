@@ -10,7 +10,9 @@ try:
     from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
     from PyQt5.QtGui import QFont
+    from HTTP_TCPIP import internetFrame
     from testEndFrame import testEndFrame
+
 except Exception as e:
     print(f"An error occurred: {e}")
     traceback.print_exc()
@@ -34,7 +36,8 @@ class comOptionFrame(QWidget):
         title_layout.setSpacing(0)
         # rs485_layout = QVBoxLayout(self)
         # HTTP_TCPIP_layout = QVBoxLayout(self)
-        comOption_layout =QHBoxLayout(self)
+        comOption_layout =QVBoxLayout(self)
+        
 
         font = QFont()
         
@@ -84,10 +87,10 @@ class comOptionFrame(QWidget):
 
             if option == 'RS485':
                 print(option)
-                next_frame = testEndFrame(option, _style, self.user, self.stacked_widget)
+                next_frame = testEndFrame(option, _style, self.user, self.stacked_widget, self.sub_pages)
             elif option == 'HTTP / TCPIP':
                 print(option)
-                next_frame = testEndFrame(option, _style, self.user, self.stacked_widget)
+                next_frame = internetFrame(option, _style, self.user, self.stacked_widget, self.sub_pages)
             else:
                 print('Wrong Option:',option)
 

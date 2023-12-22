@@ -27,6 +27,7 @@ class deviceInfoFrame(QWidget):
         # print(title)
         print('測試畫面：', title)
         self.title = title
+        self.user=user
         self.sub_pages=sub_pages
         self.font = QFont()
 
@@ -85,17 +86,17 @@ class deviceInfoFrame(QWidget):
             # disk_info += info + '\n'
         # print(disk_info)
 
-        # network_info = '網路介面資訊:' + '暫未提供' + '\n'
-        network_info = '網路介面資訊:' + '\n'
-        for line in self.get_network_info():
-            network_info += line + '\n'
-        # print(network_info)
+        # # network_info = '網路介面資訊:' + '暫未提供' + '\n'
+        # network_info = '網路介面資訊:' + '\n'
+        # for line in self.get_network_info():
+        #     network_info += line + '\n'
+        # # print(network_info)
 
         gpio_info = 'GPIO 資訊:' + '暫未提供' + '\n'
         # gpio_info = 'GPIO 資訊:' + self.get_gpio_info()
         # print(gpio_info) 
 
-        self.deviceInfo_label.setText(cpu_info + gpu_info + memory_info + disk_info + network_info + gpio_info)
+        self.deviceInfo_label.setText(cpu_info + gpu_info + memory_info + disk_info + gpio_info)
 
         
         # print(title ,user.userInfo())
@@ -184,20 +185,20 @@ class deviceInfoFrame(QWidget):
     #         disk_info.append(f'{partition.device}: Total={disk_usage.total} bytes, Free={disk_usage.free} bytes')
     #     return disk_info
     
-    def get_network_info(self):
-        try:
-            interfaces = psutil.net_if_addrs()
-            result = []
-            for interface, addresses in interfaces.items():
-                result.append(f' Interface: {interface}')
-                for address in addresses:
-                    result.append(f'   Address Family: {address.family}')
-                    result.append(f'     Address: {address.address}')
-                    result.append(f'     Netmask: {address.netmask}')
-                    result.append(f'     Broadcast: {address.broadcast}')
-            return result
-        except Exception as e:
-            return f'無法取得網路介面資訊: {e}'
+    # def get_network_info(self):
+    #     try:
+    #         interfaces = psutil.net_if_addrs()
+    #         result = []
+    #         for interface, addresses in interfaces.items():
+    #             result.append(f' Interface: {interface}')
+    #             for address in addresses:
+    #                 result.append(f'   Address Family: {address.family}')
+    #                 result.append(f'     Address: {address.address}')
+    #                 result.append(f'     Netmask: {address.netmask}')
+    #                 result.append(f'     Broadcast: {address.broadcast}')
+    #         return result
+    #     except Exception as e:
+    #         return f'無法取得網路介面資訊: {e}'
         
     # def get_gpio_info(self):
     #     try:
