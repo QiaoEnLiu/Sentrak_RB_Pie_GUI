@@ -28,6 +28,7 @@ class deviceInfoFrame(QWidget):
         print('測試畫面：', title)
         self.title = title
         self.sub_pages=sub_pages
+
         self.font = QFont()
 
         # 標題列

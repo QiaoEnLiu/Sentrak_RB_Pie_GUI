@@ -16,7 +16,7 @@ except Exception as e:
 
 
 class testEndFrame(QWidget):
-    def __init__(self, title, _style, user, stacked_widget):
+    def __init__(self, title, _style, user, stacked_widget, sub_pages):
         super().__init__()
         print(title)
 

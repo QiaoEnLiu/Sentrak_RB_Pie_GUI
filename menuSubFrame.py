@@ -15,8 +15,9 @@ try:
     from PyQt5.QtGui import QFont, QPixmap, QImage
 
     from testEndFrame import testEndFrame
-    from id_Frame import id_LogIn_Frame
-    from deviceInfo import deviceInfoFrame
+    from communicationOption import comOptionFrame # 設定 >> 通訊
+    from id_Frame import id_LogIn_Frame # 識別 >> 登入訊息
+    from deviceInfo import deviceInfoFrame # 識別 >> 儀器資訊
     from img_to_base64 import image_to_base64
 
 except Exception as e:
@@ -176,8 +177,6 @@ class menuSubFrame(QWidget):
         self.list_widget.itemClicked.connect(lambda item: self.handle_record_item_click(item))
         
 
-
-
     def itemDeescribe(self, option):
         item_title = option
         if item_title == '顯示':
@@ -229,20 +228,22 @@ class menuSubFrame(QWidget):
         # 判斷是否已經創建了 testEndFrame
         if item_text not in self.sub_pages: #"testEndFrame"
             print('進入選項：', item_text)
-            if item_text == '登入身份':
+            if item_text == '通訊':
+                next_frame = comOptionFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
+
+            elif item_text == '登入身份':
 
                 # 進入「登入身份」介面，此功能須再與解鎖功能區分
-
                 # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.user)
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
 
             elif item_text == '儀器資訊': 
                 # 進入「儀器資訊」介面，暫以本機開發硬體測試
-                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
-            
+                next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
+
             else:
                 # 如果還沒有，則創建一個新的 testEndFrame 為終節點畫面測試
-                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget)
+                next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
                 
             # 添加到堆疊中
             next_frame_index = self.stacked_widget.addWidget(next_frame)

@@ -22,10 +22,10 @@ except Exception as e:
 class id_LogIn_Frame(QWidget):
     login_successful = pyqtSignal(bool)
 
-    def __init__(self, title, _style): # ,main_window
+    def __init__(self, title, _style, sub_pages): # ,main_window
         super().__init__()
-        print('進入畫面：', title)
-
+        print('進入畫面：', title)  
+        self.sub_pages=sub_pages
         font = QFont()
 
          # 標題列
