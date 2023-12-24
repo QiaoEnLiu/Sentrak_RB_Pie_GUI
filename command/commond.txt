@@ -1,8 +1,8 @@
 Powershell:
 
 pyinstaller --onefile --add-data "picture/;picture" --hidden-import=psutil main.py
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\main.py --add-data "picture;picture" --hidden-import=minimalmodbus
-pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\main.py --add-data "picture;picture" --hidden-import=minimalmodbus
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_9 .\main.py --add-data "picture;picture" --add-data "record/*.json:record" --hidden-import=minimalmodbus
+pyinstaller --onefile --name Sentrak-GUI-RBPie-Py3_10 .\main.py --add-data "picture;picture" --add-data "record/*.json:record" --hidden-import=minimalmodbus
 
 .\venv-py3_10\Scripts\activate
 deactivate

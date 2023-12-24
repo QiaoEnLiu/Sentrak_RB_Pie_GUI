@@ -8,11 +8,10 @@
 try:
     import traceback
     from PyQt5.QtCore import Qt
-    from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
+    from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QSizePolicy
     from PyQt5.QtGui import QFont
     from HTTP_TCPIP import internetFrame
     from testEndFrame import testEndFrame
-
 except Exception as e:
     print(f"An error occurred: {e}")
     traceback.print_exc()
@@ -22,21 +21,23 @@ except Exception as e:
 class comOptionFrame(QWidget):
     def __init__(self, title, _style, user, stacked_widget, sub_pages):
         super().__init__()
-        print(title)
+        
         self.user=user
         self.stacked_widget=stacked_widget
         self.sub_pages=sub_pages
+
+        print(title,self.user.userInfo())
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0) 
 
-        title_layout =QVBoxLayout(self)
-        title_layout.setContentsMargins(0, 0, 0, 0) 
-        title_layout.setSpacing(0)
-        # rs485_layout = QVBoxLayout(self)
-        # HTTP_TCPIP_layout = QVBoxLayout(self)
-        comOption_layout =QVBoxLayout(self)
+        title_layout =QVBoxLayout()
+        # title_layout.setContentsMargins(0, 0, 0, 0) 
+        # title_layout.setSpacing(0)
+        rs485_layout = QVBoxLayout()
+        HTTP_TCPIP_layout = QVBoxLayout()
+        comOption_layout =QVBoxLayout()
         
 
         font = QFont()
@@ -56,21 +57,27 @@ class comOptionFrame(QWidget):
         rs485=QPushButton('RS485', self)
         rs485.setFont(font)
         # rs485.setStyleSheet(_style)
+        rs485.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         HTTP_TCPIP=QPushButton('HTTP / TCPIP', self)
         HTTP_TCPIP.setFont(font)
         # HTTP_TCPIP.setStyleSheet(_style)
+        HTTP_TCPIP.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         title_layout.addWidget(self.title_label)
-        # rs485_layout.addWidget(rs485)
-        # HTTP_TCPIP_layout.addWidget(HTTP_TCPIP)
-        comOption_layout.addWidget(rs485)
-        comOption_layout.addWidget(HTTP_TCPIP)
+        rs485_layout.addWidget(rs485)
+        HTTP_TCPIP_layout.addWidget(HTTP_TCPIP)
+        comOption_layout.addLayout(rs485_layout)
+        # comOption_layout.addStretch()
+        comOption_layout.addLayout(HTTP_TCPIP_layout)
+        # comOption_layout.addStretch()
+
 
         main_layout.addLayout(title_layout)
+        # main_layout.addStretch()
         main_layout.addLayout(comOption_layout)
 
-        print('終節點測試畫面：', title)
+        # print('終節點測試畫面：', title)
         print(user.userInfo())
 
         comOption_frame_index = self.stacked_widget.addWidget(self)

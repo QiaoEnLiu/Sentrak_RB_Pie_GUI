@@ -312,9 +312,13 @@ class MyWindow(QMainWindow):
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            # 如果用戶選擇 "Yes"，則關閉應用程式
-            global_presentUser=None
+            # 如果用戶選擇 "Yes"，則登出應用程式
+                    
+
+
+            global global_presentUser
             self.isLogin=False
+
             QMessageBox.information(self, '登出成功', '返回主頁面')
             self.logout_button.setVisible(self.isLogin) 
             print('logout_button_click:',self.logout_button.isVisible())
@@ -324,9 +328,26 @@ class MyWindow(QMainWindow):
             self.lock_icon_bytes = QByteArray.fromBase64(self.lock_icon_base64.encode())
             # self.lock_label.setPixmap(QPixmap.fromImage(QImage.fromData(self.lock_icon_bytes)))
 
-            # 將畫面切換回主畫面
+            # 將畫面切換回主畫面（清空堆疊）
+            # 判斷是否只剩下一頁，如果是，則不執行刪除
+            print('Totle Pages:', self.stacked_widget.count())
+            if self.stacked_widget.count() > 1:
+                print('Remove Pages:', self.stacked_widget.count()-1)
+                while self.stacked_widget.count() > 2:
+                    widget = self.stacked_widget.widget(self.stacked_widget.count() - 1)  # 取得最頂層的頁面
+                    print('Remaining Pages:', self.stacked_widget.count() - 1)
+                    if widget:
+                        self.stacked_widget.removeWidget(widget)
+                        widget.deleteLater()
+                print('Back to First Pages:', self.stacked_widget.count())
+            
+            else:
+                print('First Pages:', self.stacked_widget.count())
+
             self.stacked_widget.setCurrentIndex(self.plot_page_index)
             self.current_page_index = self.plot_page_index
+            
+            # print('Current Index:', self.plot_page_index)
 
             self.lock_button.setVisible(not self.isLogin)
             self.return_button.setVisible(False)

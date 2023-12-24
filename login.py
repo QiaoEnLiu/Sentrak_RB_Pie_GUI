@@ -61,7 +61,7 @@ class LoginDialog(QDialog):
         self.username_denial_label.setFont(font)
         self.username_denial_label.setStyleSheet("color: red;")
         self.username_input = QLineEdit(self)
-        self.username_input.setText('asdf')
+        self.username_input.setText('Ayt001')
         self.username_input.setFont(font)
         
 
@@ -72,7 +72,7 @@ class LoginDialog(QDialog):
         self.password_denial_label.setFont(font)
         self.password_denial_label.setStyleSheet("color: red;")
         self.password_input = QLineEdit(self)
-        self.password_input.setText('asdf')
+        self.password_input.setText('Priorty001')
         self.password_input.setFont(font)
         self.password_input.setEchoMode(QLineEdit.Password)  # 隱藏輸入的文字
         
