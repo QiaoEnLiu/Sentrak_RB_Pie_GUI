@@ -18,6 +18,7 @@ except Exception as e:
     traceback.print_exc()
     input("Press Enter to exit")
 
+font = QFont()
 
 class id_LogIn_Frame(QWidget):
     login_successful = pyqtSignal(bool)
@@ -26,7 +27,6 @@ class id_LogIn_Frame(QWidget):
         super().__init__()
         print('進入畫面：', title)  
         self.sub_pages=sub_pages
-        font = QFont()
 
          # 標題列
         title_layout = QVBoxLayout()

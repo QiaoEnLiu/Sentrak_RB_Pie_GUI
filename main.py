@@ -28,6 +28,7 @@ except Exception as e:
     traceback.print_exc()
     input("Press Enter to exit")
 
+font = QFont()
 
 global_presentUser = None
 
@@ -58,11 +59,8 @@ class MyWindow(QMainWindow):
         print('視窗大小：', winWidth, '*', winHeight)
         print('螢幕解析：', screen_width, '*', screen_height)
 
-
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
-
-        self.font = QFont()
 
         # 創建狀態列
         status_bar = QStatusBar(self)
@@ -75,8 +73,8 @@ class MyWindow(QMainWindow):
         self.datetime_label = QLabel(self)
         status_bar.addWidget(self.datetime_label, 1)  # 將 QLabel 加入狀態列，並指定伸縮因子為1
         self.datetime_label.setAlignment(Qt.AlignCenter)  # 文字置中
-        self.font.setPointSize(36)
-        self.datetime_label.setFont(self.font)
+        font.setPointSize(36)
+        self.datetime_label.setFont(font)
 
         # 更新日期時間的 QTimer
         self.update_datetime_timer = QTimer(self)
@@ -93,8 +91,8 @@ class MyWindow(QMainWindow):
         # main_frame.setStyleSheet("background-color: white;")  # 主畫面背景顏色
         main_label = QLabel("O<sub>2</sub>： 12.56 ppb<br>T： 16.8 °C") # ° 為Alt 0176
         main_label.setAlignment(Qt.AlignCenter)  # 文字置中
-        self.font.setPointSize(72)
-        main_label.setFont(self.font)
+        font.setPointSize(72)
+        main_label.setFont(font)
         main_frame_layout = QVBoxLayout(main_frame)
         # main_frame_layout.setContentsMargins(0, 0, 0, 0)
         main_frame_layout.setSpacing(0)  # 添加這一行以消除元素之間的間距
@@ -106,8 +104,8 @@ class MyWindow(QMainWindow):
         # self.sub_frame.setStyleSheet("background-color: lightblue;")  # 子畫面背景顏色
         # sub_label = QLabel('子畫面')
         # sub_label.setAlignment(Qt.AlignCenter)  # 文字置中
-        # self.font.setPointSize(72)
-        # sub_label.setFont(self.font)
+        # font.setPointSize(72)
+        # sub_label.setFont(font)
         self.sub_frame_layout = QVBoxLayout(self.sub_frame)
         self.sub_frame_layout.setContentsMargins(0, 0, 0, 0)
         self.sub_frame_layout.setSpacing(0)  # 添加這一行以消除元素之間的間距
@@ -178,16 +176,16 @@ class MyWindow(QMainWindow):
         self.menu_button.setFixedSize(button_width, button_height)
         self.return_button.setFixedSize(button_width, button_height)
         
-        self.font.setPointSize(36)
-        save_button.setFont(self.font)
-        # test_button.setFont(self.font)
-        self.test_RTU_button.setFont(self.font)
-        self.quit_button.setFont(self.font)
-        # self.lock_label.setFont(self.font)
-        self.lock_button.setFont(self.font)
-        self.logout_button.setFont(self.font)
-        self.menu_button.setFont(self.font)
-        self.return_button.setFont(self.font)
+        font.setPointSize(36)
+        save_button.setFont(font)
+        # test_button.setFont(font)
+        self.test_RTU_button.setFont(font)
+        self.quit_button.setFont(font)
+        # self.lock_label.setFont(font)
+        self.lock_button.setFont(font)
+        self.logout_button.setFont(font)
+        self.menu_button.setFont(font)
+        self.return_button.setFont(font)
 
         # 設定圖片路徑，picture資料夾和程式碼同一個資料夾中
 
@@ -412,10 +410,10 @@ class MyWindow(QMainWindow):
         menu_page = QFrame(self)
         menu_page.setStyleSheet("background-color: green;")  # 選單畫面背景顏色
 
-        self.font.setPointSize(32)
+        font.setPointSize(32)
         # menu_label = QLabel('選單')
         # menu_label.setAlignment(Qt.AlignCenter)  # 文字置中
-        # menu_label.setFont(self.font)
+        # menu_label.setFont(font)
         menu_page_layout = QGridLayout(menu_page)
         menu_page_layout.setSpacing(0)
         # menu_page_layout.addWidget(menu_label)
@@ -440,10 +438,10 @@ class MyWindow(QMainWindow):
         self.record_button.setStyleSheet("background-color: lightblue;")
         self.identify_button.setStyleSheet("background-color: yellow;")
 
-        self.set_button.setFont(self.font)
-        self.calibrate_button.setFont(self.font)
-        self.record_button.setFont(self.font)
-        self.identify_button.setFont(self.font)
+        self.set_button.setFont(font)
+        self.calibrate_button.setFont(font)
+        self.record_button.setFont(font)
+        self.identify_button.setFont(font)
 
         # 連接按鈕點擊事件
         self.set_button.clicked.connect(lambda: self.show_sub_page(self.set_button.text(),self.set_button.styleSheet()))

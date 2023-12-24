@@ -18,6 +18,8 @@ except Exception as e:
     input("Press Enter to exit")
 
 
+font = QFont()
+
 class comOptionFrame(QWidget):
     def __init__(self, title, _style, user, stacked_widget, sub_pages):
         super().__init__()
@@ -38,10 +40,7 @@ class comOptionFrame(QWidget):
         rs485_layout = QVBoxLayout()
         HTTP_TCPIP_layout = QVBoxLayout()
         comOption_layout =QVBoxLayout()
-        
-
-        font = QFont()
-        
+                
         self.title_label = QLabel(title, self)
         self.title_label.setAlignment(Qt.AlignCenter)  
         self.title_label.setContentsMargins(0, 0, 0, 0)

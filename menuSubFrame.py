@@ -24,7 +24,7 @@ except Exception as e:
     print(f"An error occurred: {e}")
     traceback.print_exc()
     input("Press Enter to exit")
-
+font = QFont()
 class menuSubFrame(QWidget):
 
 
@@ -40,14 +40,12 @@ class menuSubFrame(QWidget):
         self.user=main_window.get_global_presentUser()
         print(title,self.user.userInfo())
 
-        self.font = QFont()
-
         # 標題列
         title_layout = QVBoxLayout()        
         self.title_label = QLabel(self.title, self)
         # title_label.setAlignment(Qt.AlignCenter)  
-        self.font.setPointSize(36)
-        self.title_label.setFont(self.font)
+        font.setPointSize(36)
+        self.title_label.setFont(font)
         self.title_label.setStyleSheet(_style)
         title_layout.addWidget(self.title_label)
 
@@ -115,17 +113,17 @@ class menuSubFrame(QWidget):
         item_label = QLabel(option)# 設置文字
         self.describe_label = QLabel()
 
-        self.font.setPointSize(pixmap.scaledToHeight(144).height()*30//80)
-        # self.font.setPointSize(42)
-        item_label.setFont(self.font)
+        font.setPointSize(pixmap.scaledToHeight(144).height()*30//80)
+        # font.setPointSize(42)
+        item_label.setFont(font)
         item_label.setStyleSheet("border: 5px solid black;border-bottom: 0px;")
         item_label.setContentsMargins(0, 0, 0, 0)
         # print('item_label:', item_label.font().pointSize())
 
         self.describe_label.setText('描述')
-        self.font.setPointSize(pixmap.scaledToHeight(144).height()*15//80)
-        # self.font.setPointSize(12)
-        self.describe_label.setFont(self.font)
+        font.setPointSize(pixmap.scaledToHeight(144).height()*15//80)
+        # font.setPointSize(12)
+        self.describe_label.setFont(font)
         self.describe_label.setStyleSheet("border: 5px solid black;border-top: 0px; color: gray")
         self.describe_label.setContentsMargins(0, 0, 0, 0)
         # print('self.describe_label:', self.describe_label.font().pointSize())
@@ -169,7 +167,7 @@ class menuSubFrame(QWidget):
         # 將項目添加到 QListWidget
         item.setData(Qt.UserRole, option)  # 使用setData將選項存儲為UserRole
         self.list_widget.addItem(item)
-        self.list_widget.setFont(self.font)
+        self.list_widget.setFont(font)
         self.list_widget.setItemWidget(item, widget)  # 將 widget 與 item 關聯起來
 
 

@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('picture', 'picture')],
+    datas=[('picture', 'picture'), ('record', 'record')],
     hiddenimports=['minimalmodbus'],
     hookspath=[],
     hooksconfig={},

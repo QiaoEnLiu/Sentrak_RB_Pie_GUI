@@ -11,8 +11,7 @@ try:
     from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QScrollArea
     from PyQt5.QtGui import QFont
 
-    import platform, os, subprocess, re, traceback
-    import psutil
+    import platform, os, subprocess, re, traceback, psutil
     # import RPi.GPIO as GPIO
 
 except Exception as e:
@@ -20,6 +19,7 @@ except Exception as e:
     traceback.print_exc()
     input("Press Enter to exit")
 
+font = QFont()
 
 class deviceInfoFrame(QWidget):
     def __init__(self, title, _style, user, stacked_widget, sub_pages):
@@ -29,17 +29,16 @@ class deviceInfoFrame(QWidget):
         self.title = title
         self.user=user
         self.sub_pages=sub_pages
-        self.font = QFont()
 
         # 標題列
         title_layout = QVBoxLayout()        
         self.title_label = QLabel(self.title, self)
         # title_label.setAlignment(Qt.AlignCenter)  
-        self.font.setPointSize(36)
-        self.title_label.setFont(self.font)
+        font.setPointSize(36)
+        self.title_label.setFont(font)
         self.title_label.setStyleSheet(_style)
         title_layout.addWidget(self.title_label)
-        # self.font.setPointSize(72)
+        # font.setPointSize(72)
 
         # title_layout.setContentsMargins(0, 0, 0, 0)
         # title_layout.setSpacing(0)
@@ -50,8 +49,8 @@ class deviceInfoFrame(QWidget):
 
         self.deviceInfo_label = QLabel()
         # title_label.setAlignment(Qt.AlignCenter)  
-        self.font.setPointSize(24)
-        self.deviceInfo_label.setFont(self.font)
+        font.setPointSize(24)
+        self.deviceInfo_label.setFont(font)
         # self.deviceInfo_label.setStyleSheet(_style) 
 
         # 將 deviceInfo_label 放入 QScrollArea

@@ -8,21 +8,31 @@ try:
     
     from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QScrollArea,\
-          QHBoxLayout, QLineEdit, QPushButton, QMessageBox
+          QHBoxLayout, QLineEdit, QPushButton, QMessageBox, QDialog
     from PyQt5.QtGui import QFont, QIntValidator
     from datetime import datetime
 
-    import traceback, json
+    import os, traceback, json, psutil
 
 except Exception as e:
     print(f"An error occurred: {e}")
     traceback.print_exc()
     input("Press Enter to exit")
 
+try:
+    # 獲取腳本檔案的目錄
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-log_file = 'record/Sentrak_set_ip.json'
-# 讀取預設值的 JSON 檔案
-default_ip_file = 'record/Sentrak_default_ip.json'
+    # 讀取預設值的 JSON 檔案
+    log_file = os.path.join(script_dir, 'record/Sentrak_set_ip.json')
+
+    # 使用相對路徑構建檔案路徑
+    default_ip_file = os.path.join(script_dir, 'record', 'Sentrak_default_ip.json')
+except Exception as e:
+    print(f"An error occurred: {e}")
+    traceback.print_exc()
+
+font = QFont()
 
 
 class internetFrame(QWidget):
@@ -36,17 +46,14 @@ class internetFrame(QWidget):
 
         print(self.title, self.user.userInfo())
 
-        self.font = QFont()
-
         # 標題列
         title_layout = QVBoxLayout()        
         self.title_label = QLabel(self.title, self)
         # title_label.setAlignment(Qt.AlignCenter)  
-        self.font.setPointSize(36)
-        self.title_label.setFont(self.font)
+        font.setPointSize(36)
+        self.title_label.setFont(font)
         self.title_label.setStyleSheet(_style)
         title_layout.addWidget(self.title_label)
-        # self.font.setPointSize(72)
 
         # title_layout.setContentsMargins(0, 0, 0, 0)
         # title_layout.setSpacing(0)
@@ -55,20 +62,6 @@ class internetFrame(QWidget):
         # internetInfo_layout.setContentsMargins(0, 0, 0, 0)
         # internetInfo_layout.setSpacing(0)
 
-        self.internetInfo_label = QLabel()
-        # title_label.setAlignment(Qt.AlignCenter)  
-        self.font.setPointSize(24)
-        self.internetInfo_label.setFont(self.font)
-        # self.internetInfo_label.setStyleSheet(_style) 
-
-        # # 將 internetInfo_label 放入 QScrollArea
-        # scroll_area = QScrollArea(self)
-        # scroll_area.setWidgetResizable(True)
-        # scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        # scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        # scroll_area.setWidget(self.internetInfo_label)
-
-        # internetInfo_layout.addWidget(scroll_area)
 
         self.ipconfig_texts = {
             "IPv4": [QLineEdit() for _ in range(4)],
@@ -92,21 +85,21 @@ class internetFrame(QWidget):
 
 
         set_button=QPushButton('設定', self)
-        set_button.setFont(self.font)
-        set_button.clicked.connect(lambda: self.setInternet(
-            self.ipconfig_texts['IPv4'],
-            self.ipconfig_texts['子網路遮罩'],
-            self.ipconfig_texts['預設閘道'],
-            self.ipconfig_texts['DNS 伺服器']))
+        set_button.setFont(font)
+        set_button.clicked.connect(lambda: self.setInternet())
         
         ip_default_button=QPushButton('預設IP組', self)
-        ip_default_button.setFont(self.font)
+        ip_default_button.setFont(font)
         ip_default_button.clicked.connect(lambda: self.ip_to_default())
 
+        network_stat_bt=QPushButton('網路狀態',self)
+        network_stat_bt.setFont(font)
+        network_stat_bt.clicked.connect(lambda: self.show_networt())
 
         set_layout=QHBoxLayout()
         set_layout.addWidget(set_button)
         set_layout.addWidget(ip_default_button)
+        set_layout.addWidget(network_stat_bt)
 
         internetInfo_layout.addStretch()
         internetInfo_layout.addLayout(ip_layout)
@@ -127,15 +120,6 @@ class internetFrame(QWidget):
         main_layout.addLayout(title_layout)
         main_layout.addLayout(internetInfo_layout)
 
-
-        # # network_info = '網路介面資訊:' + '暫未提供' + '\n'
-        # network_info = '網路介面資訊:' + '\n'
-        # for line in self.get_network_info():
-        #     network_info += line + '\n'
-        # # print(network_info)
-
-        # self.internetInfo_label.setText(network_info)
-
         print(title ,user.userInfo())
 
         self.stacked_widget = stacked_widget
@@ -147,7 +131,7 @@ class internetFrame(QWidget):
 
     def ip_input_layout(self, name):
         # 創建水平佈局，包含標籤和輸入框
-        self.font.setPointSize(32)
+        font.setPointSize(32)
         layout = QVBoxLayout()
 
         label_layout = QVBoxLayout()
@@ -158,7 +142,7 @@ class internetFrame(QWidget):
         label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         label_layout.addWidget(label)
 
-        label.setFont(self.font)
+        label.setFont(font)
 
 
         # 創建輸入框，用小數點分隔
@@ -175,11 +159,11 @@ class internetFrame(QWidget):
         
         for input_box in input_boxes:
             # ip.append(input_box.text())
-            input_box.setFont(self.font)
+            input_box.setFont(font)
             ip_layout.addWidget(input_box)
             if input_box != input_boxes[-1]:  # 不是最後一個輸入框，添加小數點標籤
                 dot_label = QLabel(".")
-                dot_label.setFont(self.font)
+                dot_label.setFont(font)
                 ip_layout.addWidget(dot_label)
 
         self.ipconfig_texts[name] = self.input_boxes
@@ -190,34 +174,18 @@ class internetFrame(QWidget):
 
         return layout, input_boxes
 
-    
-    def get_network_info(self):
-        try:
-            interfaces = psutil.net_if_addrs()
-            result = []
-            for interface, addresses in interfaces.items():
-                result.append(f' Interface: {interface}')
-                for address in addresses:
-                    result.append(f'   Address Family: {address.family}')
-                    result.append(f'     Address: {address.address}')
-                    result.append(f'     Netmask: {address.netmask}')
-                    result.append(f'     Broadcast: {address.broadcast}')
-            return result
-        except Exception as e:
-            return f'無法取得網路介面資訊: {e}'
 
-    def setInternet(self, ipv4, subnet_mask, gateway, dns):
+    def setInternet(self):
 
-
-        if self.user.control == True:
-            print('設定網路:',self.user.control)
+        if self.user.write == True:
+            print('設定網路:',self.user.write)
 
             # 建立一個字典，用於儲存各個類別的 IP 資訊
             ip_values = {}
         
             for name, input_boxes in self.ipconfig_texts.items():
                 # 檢查每個輸入框是否有有效的文本
-                values = [input_box.text() for input_box in input_boxes]
+                values = [str(int(input_box.text())) for input_box in input_boxes]
                 
                 # 檢查是否有超出範圍的值，顯示提示並要求重新輸入
                 if any(not 0 <= int(value) <= 255 if value else False for value in values):
@@ -226,13 +194,6 @@ class internetFrame(QWidget):
                 else:                   
                     ip_values[name] = values
 
-                # 印出每個類別的 IP
-                # print(f"{name}: {'.'.join(map(str, values))}")
-                    
-            # print("IP Config 文字框:")
-            # for name, input_boxes in self.ipconfig_texts.items():
-            #     values = [input_box.text() for input_box in input_boxes]
-            #     print(f"{name}: {values}")
             print("IP Config 文字框:")
             for name, values in ip_values.items():
                 print(f"{name}: {values}")
@@ -300,9 +261,7 @@ class internetFrame(QWidget):
 
         # 寫入更新後的使用者資訊到檔案
         with open(log_file, 'w', encoding='utf-8') as file:
-            # json.dump(ip_update_info, file, ensure_ascii=False, separators=(',', ':'),indent=1)
             json_str = json.dumps(ip_update_info, ensure_ascii=False)
-            # json_string = json_str.replace('[\n', '[').replace('\n    ', '').replace(',\n', ', ')
             json_string = json_str.replace(', "ip_values": ', ', "ip_values":\n').replace(']}},',']}},\n').replace('"],','"],\n')
             file.write(json_string)
 
@@ -316,3 +275,57 @@ class internetFrame(QWidget):
                 del self.sub_pages[title]
 
         self.stacked_widget.setCurrentIndex(self.current_page_index)
+
+    
+    def get_network_info(self):
+        try:
+            interfaces = psutil.net_if_addrs()
+            result = []
+            for interface, addresses in interfaces.items():
+                result.append(f' Interface: {interface}')
+                for address in addresses:
+                    result.append(f'   Address Family: {address.family}')
+                    result.append(f'     Address: {address.address}')
+                    result.append(f'     Netmask: {address.netmask}')
+                    result.append(f'     Broadcast: {address.broadcast}')
+            return result
+        except Exception as e:
+            return f'無法取得網路介面資訊: {e}'
+        
+    def show_networt(self):
+
+        # network_info = '網路介面資訊:' + '暫未提供' + '\n'
+        network_info = '網路介面資訊:' + '\n'
+        for line in self.get_network_info():
+            network_info += line + '\n'
+        # print(network_info)
+            
+        MyDialog(network_info).exec_()
+
+        
+class MyDialog(QDialog):
+    def __init__(self, text):
+        super().__init__()
+
+        # 創建一個 QScrollArea 作為主要顯示區域
+        scroll_area = QScrollArea(self)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        internetInfo_label = QLabel(text,self)
+        font.setPointSize(24)
+        internetInfo_label.setFont(font)
+        # internetInfo_label.setStyleSheet(_style) 
+
+        # internetInfo_label.setText(text)
+
+        # 將內容設置為 QScrollArea 的可滾動部分
+        scroll_area.setWidget(internetInfo_label)
+
+        # 將 QScrollArea 添加到主佈局
+        main_layout = QVBoxLayout(self)
+        main_layout.addWidget(scroll_area)
+
+        # 設定 QDialog 的大小
+        self.resize(960, 780)

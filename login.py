@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit
 from PyQt5.QtGui import QFont
 from userPermissions import Permissions
 
+font = QFont()
+
 global_loginUser = None
 class LoginDialog(QDialog):
     def __init__(self):
@@ -18,6 +20,7 @@ class LoginDialog(QDialog):
                 'username': 'asdf',
                 'password': 'asdf',
                 'control': True,
+                'write': True,
                 'read': True,
                 'download': True
             },
@@ -25,6 +28,7 @@ class LoginDialog(QDialog):
                 'username': 'Ayt001',
                 'password': 'Priorty001',
                 'control': True,
+                'write': True,
                 'read': True,
                 'download': True
             },
@@ -32,6 +36,7 @@ class LoginDialog(QDialog):
                 'username': 'Ayt0A1',
                 'password': 'Priorty002',
                 'control': True,
+                'write': False,
                 'read': True,
                 'download': False
             },
@@ -39,6 +44,7 @@ class LoginDialog(QDialog):
                 'username': 'Ayt0B1',
                 'password': 'Priorty003',
                 'control': False,
+                'write': False,
                 'read': True,
                 'download': False
             }
@@ -49,7 +55,6 @@ class LoginDialog(QDialog):
 
     def initUI(self):
         
-        font = QFont()
         font.setPointSize(36)
 
         self.presentUser=None
@@ -148,13 +153,12 @@ class LoginDialog(QDialog):
         global global_loginUser
         
 
-
         # 檢查使用者是否存在
         if any('username' in user_info and user_info['username'] == username and user_info['password'] == password for user_info in self.users.values()):
             # print('輸入的帳號：', username)
             # print('輸入的密碼：', password)
             user_info = next(user_info for user_info in self.users.values() if user_info['username'] == username)
-            user_permissions = {k: v for k, v in user_info.items() if k in ['username', 'password', 'control', 'read', 'download']}
+            user_permissions = {k: v for k, v in user_info.items() if k in ['username', 'password', 'control', 'write', 'read', 'download']}
             self.presentUser = Permissions(**user_permissions)
             # print('self.presentUser:',self.presentUser.userInfo())
             global_loginUser = self.presentUser
@@ -169,79 +173,6 @@ class LoginDialog(QDialog):
             # print('存在的使用者：', list(self.users.keys()))
             QMessageBox.critical(self, '登入失敗', '帳號密碼錯誤！')
 
-
-    # def handle_login(self): #套用類別
-    #     global global_loginUser
-    #     username = self.username_input.text()
-    #     password = self.password_input.text()
-    #     print('帳號:', username)
-    #     print('密碼:', password)
-    #     successLoginInfo='歡迎{}使用'.format(username)     
-
-    #     # Permissions(帳號, 密碼, 
-    #     #             控制（設定）, 讀取（預覽）, 下載（讀取資料檔案）)
-
-    #     user0=Permissions(username='asdf', password='asdf',
-    #                        control=True, read=True, download=True)
-        
-    #     user_P001=Permissions(username='Ayt001', password='Priorty001',
-    #                        control=True, read=True, download=True)
-        
-    #     user_P0A1=Permissions(username='Ayt0A1', password='Priorty002',
-    #                        control=True, read=True, download=False)
-        
-    #     user_P0B1=Permissions(username='Ayt0B1', password='Priorty003',
-    #                        control=False, read=True, download=False)
-
-    #     # 這裡模擬登入的邏輯，實際上您需要替換成真實的帳號密碼驗證邏
-    #     # 登入成功、失敗的情況
-    #     if username == user0.username and password == user0.password:
-    #         # 登入成功，執行 accept() 以關閉對話框
-    #         self.presentUser=user0
-    #         global_loginUser = self.presentUser
-    #         QMessageBox.information(self, '登入成功', successLoginInfo)
-    #         print(global_loginUser.userInfo())
-    #         # print(user0.username, ' '+str(user0.control), ' '+str(user0.read), ' '+ str(user0.download), sep='\n')
-    #         self.accept()
-
-    #     elif username == user_P001.username and password == user_P001.password:
-    #         # 登入成功，執行 accept() 以關閉對話框
-    #         self.presentUser=user_P001
-    #         global_loginUser = self.presentUser
-    #         QMessageBox.information(self, '登入成功', successLoginInfo)
-    #         print(global_loginUser.userInfo())
-    #         # print(user_P001.username, ' '+str(user_P001.control), ' '+str(user_P001.read), ' '+ str(user_P001.download), sep='\n')
-    #         self.accept()
-
-    #     elif username == user_P0A1.username and password == user_P0A1.password:
-    #         # 登入成功，執行 accept() 以關閉對話框
-    #         self.presentUser=user_P0A1
-    #         global_loginUser = self.presentUser
-    #         QMessageBox.information(self, '登入成功', successLoginInfo)
-    #         print(global_loginUser.userInfo())
-    #         # print(user_P0A1.username, ' '+str(user_P0A1.control), ' '+str(user_P0A1.read), ' '+ str(user_P0A1.download), sep='\n')
-    #         self.accept()
-
-    #     elif username == user_P0B1.username and password == user_P0B1.password:
-    #         # 登入成功，執行 accept() 以關閉對話框
-    #         self.presentUser=user_P0B1
-    #         global_loginUser = self.presentUser
-    #         QMessageBox.information(self, '登入成功', successLoginInfo)
-    #         print(global_loginUser.userInfo())
-    #         # print(user_P0B1.username, ' '+str(user_P0B1.control), ' '+str(user_P0B1.read), ' '+ str(user_P0B1.download), sep='\n')
-    #         self.accept()
-
-    #     elif username == '' or password == '':
-    #         self.presentUser=None
-    #         global_loginUser = self.presentUser
-    #         QMessageBox.critical(self, '登入失敗', '請輸入帳號密碼！')
-
-    #     else:
-    #         self.presentUser=None
-    #         global_loginUser = self.presentUser
-    #         # 顯示錯誤提示，並保持對話框打開
-    #         QMessageBox.critical(self, '登入失敗', '帳號密碼錯誤！')
-    #         print('Login Fail')
 
     def get_global_loginUser(self):
         return global_loginUser

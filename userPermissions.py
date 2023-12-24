@@ -5,19 +5,19 @@
 
 class Permissions:
     def __init__(self, username, password, 
-                 control=False, read=False, download=False):
+                 control=False, write=False, read=False, download=False):
         self._username = username
         self._password = password
         self._control = control
+        self._write = write
         self._read = read
-        # self._write = write
         self._download = download
 
     # def __init__(self, user_dict):
     #     self._username = user_dict['username']
     #     self._password = user_dict['password']
     #     self._control = user_dict.get('control', False)
-    #     # self._write = user_dict.get('write', False)
+    #     self._write = user_dict.get('write', False)
     #     self._read = user_dict.get('read', False)
     #     self._download = user_dict.get('download', False)
 
@@ -47,13 +47,13 @@ class Permissions:
     def read(self, value):
         self._read = value
 
-    # @property
-    # def write(self):
-    #     return self._write
+    @property
+    def write(self):
+        return self._write
 
-    # @write.setter
-    # def write(self, value):
-    #     self._write = value
+    @write.setter
+    def write(self, value):
+        self._write = value
 
     @property
     def download(self):
@@ -64,6 +64,6 @@ class Permissions:
         self._download = value
 
     def userInfo(self):
-        text = '編號：'+self.username +'\n　控制：'+ str(self.control)+'\n　讀取：'+ str(self.read)+'\n　下載：'+ str(self.download)+'\n'
+        text = '編號：'+ self.username + '\n　控制：' + str(self.control) + '\n　寫入：' + str(self.write) + '\n　讀取：' + str(self.read) + '\n　下載：' + str(self.download) + '\n'
         # print(text)
         return text

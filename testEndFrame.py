@@ -14,13 +14,11 @@ except Exception as e:
     traceback.print_exc()
     input("Press Enter to exit")
 
-
+font = QFont()
 class testEndFrame(QWidget):
     def __init__(self, title, _style, user, stacked_widget, sub_pages):
         super().__init__()
         print(title)
-
-        font = QFont()
         
         end_label = QLabel(title, self)
         end_label.setAlignment(Qt.AlignCenter)  
