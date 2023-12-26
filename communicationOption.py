@@ -92,9 +92,11 @@ class comOptionFrame(QWidget):
         if option not in self.sub_pages or not self.stacked_widget.widget(self.sub_pages[option]):
 
             if option == 'RS485':
+                # 設定RS485
                 print(option)
                 next_frame = testEndFrame(option, _style, self.user, self.stacked_widget, self.sub_pages)
             elif option == 'HTTP / TCPIP':
+                # 設定HTTP / TCPIP
                 print(option)
                 next_frame = internetFrame(option, _style, self.user, self.stacked_widget, self.sub_pages)
             else:

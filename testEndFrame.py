@@ -19,6 +19,8 @@ class testEndFrame(QWidget):
     def __init__(self, title, _style, user, stacked_widget, sub_pages):
         super().__init__()
         print(title)
+
+        self.sub_pages=sub_pages
         
         end_label = QLabel(title, self)
         end_label.setAlignment(Qt.AlignCenter)  

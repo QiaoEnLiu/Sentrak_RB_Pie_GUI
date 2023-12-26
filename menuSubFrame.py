@@ -15,6 +15,7 @@ try:
     from PyQt5.QtGui import QFont, QPixmap, QImage
 
     from testEndFrame import testEndFrame
+    from displayOption import displayOptionFrame # 設定 >> 顯示
     from communicationOption import comOptionFrame # 設定 >> 通訊
     from id_Frame import id_LogIn_Frame # 識別 >> 登入訊息
     from deviceInfo import deviceInfoFrame # 識別 >> 儀器資訊
@@ -226,17 +227,21 @@ class menuSubFrame(QWidget):
         # 判斷是否已經創建了 testEndFrame
         if item_text not in self.sub_pages: #"testEndFrame"
             print('進入選項：', item_text)
-            if item_text == '通訊':
+            if item_text == '顯示':
+                # 由「設定」進入「顯示」介面
+                next_frame = displayOptionFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
+
+            elif item_text == '通訊':
+                # 由「設定」進入「通訊」介面
                 next_frame = comOptionFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
 
             elif item_text == '登入身份':
-
-                # 進入「登入身份」介面，此功能須再與解鎖功能區分
+                # 由「識別」進入「登入身份」介面，此功能須再與解鎖功能區分
                 # next_frame = id_LogIn_Frame(item_text, self.title_label.styleSheet(), self.user)
                 next_frame = testEndFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
 
             elif item_text == '儀器資訊': 
-                # 進入「儀器資訊」介面，暫以本機開發硬體測試
+                # 由「識別」進入「儀器資訊」介面，暫以本機開發硬體測試
                 next_frame = deviceInfoFrame(item_text, self.title_label.styleSheet(), self.user, self.stacked_widget, self.sub_pages)
 
             else:

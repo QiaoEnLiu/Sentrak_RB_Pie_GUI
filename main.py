@@ -17,11 +17,13 @@ try:
     from PyQt5.QtCore import Qt, QTimer, QDateTime, QByteArray
     from PyQt5.QtGui import QFont, QPixmap, QImage
 
+    from unit_transfer import unit_transfer
     from plotCanvas import plotCanvas
     from menuSubFrame import menuSubFrame
     from img_to_base64 import image_to_base64
     from testRTU import testRTU_Frame
     from login import LoginDialog
+
 
 except Exception as e:
     print(f"An error occurred: {e}")
@@ -31,6 +33,10 @@ except Exception as e:
 font = QFont()
 
 global_presentUser = None
+
+temperature_unit_text='Celsius' # Celsius, Fahrenheit
+temperature_test = 16.8 # 攝氏
+oxygen_concentration = 12.56
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -89,7 +95,10 @@ class MyWindow(QMainWindow):
         main_frame.setGeometry(0, 100, 960, 780)
         main_frame.setStyleSheet("background-color: lightblue;")
         # main_frame.setStyleSheet("background-color: white;")  # 主畫面背景顏色
-        main_label = QLabel("O<sub>2</sub>： 12.56 ppb<br>T： 16.8 °C") # ° 為Alt 0176
+
+        temperature_unit=unit_transfer.set_temperature_unit(unit=temperature_unit_text)
+        temperature=unit_transfer.convert_temperature(temperature=temperature_test,unit=temperature_unit_text)
+        main_label = QLabel(f"O<sub>2</sub>: {oxygen_concentration:.2f} ppb<br>T: {temperature:.1f} {temperature_unit}") # ° 為Alt 0176
         main_label.setAlignment(Qt.AlignCenter)  # 文字置中
         font.setPointSize(72)
         main_label.setFont(font)
@@ -263,9 +272,13 @@ class MyWindow(QMainWindow):
         current_datetime = QDateTime.currentDateTime()
         formatted_datetime = current_datetime.toString("yyyy-MM-dd hh:mm:ss")
         self.datetime_label.setText(formatted_datetime)
+        # 清除之前的圖例
+        self.plot_canvas.ax.clear()
 
-        # 新增以下兩行以更新折線圖
-        self.plot_canvas.plot()
+        # 重新繪製折線圖
+        self.plot_canvas.plot(temperature_unit=temperature_unit_text) # Celsius, Fahrenheit
+
+        # 在這裡更新畫布
         self.plot_canvas.draw()
 
     def showLoginDialog(self):
